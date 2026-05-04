@@ -116,7 +116,7 @@
           </div>
           <div class="home-learning-badge">
             <span>✨</span>
-            <strong>11 Mode Aktif</strong>
+            <strong>12 Mode Aktif</strong>
           </div>
         </section>
 
@@ -227,6 +227,17 @@
               <p>Latihan dialog seperti belanja, sekolah, dan situasi sehari-hari.</p>
             </div>
             <span class="menu-arrow">Main Dialog</span>
+          </button>
+
+
+          <button class="menu-btn menu-card toefl-btn" data-category="latihan materi interaktif suara" onclick="openToeflSimulation()">
+            <span class="card-badge">TOEFL Test</span>
+            <span class="btn-icon">📝</span>
+            <div class="btn-text">
+              <h3>Simulasi TOEFL</h3>
+              <p>Latihan ujian TOEFL lengkap: structure, grammar, vocabulary, reading, dan listening.</p>
+            </div>
+            <span class="menu-arrow">Mulai Ujian</span>
           </button>
 
           <button class="menu-btn menu-card spelling-btn" data-category="latihan interaktif" onclick="openSpelling()">
@@ -882,6 +893,113 @@
         </section>
       </main>
 
+
+      <!-- ================= HALAMAN SIMULASI TOEFL ================= -->
+      <main id="toefl-screen" class="screen">
+        <header class="top-nav">
+          <button class="icon-btn" onclick="goHome()">⬅️ Keluar</button>
+          <div class="mini-stat">📝 TOEFL</div>
+          <div class="mini-stat">⭐ <span id="tf-score-mini">0</span></div>
+        </header>
+
+        <section class="toefl-board">
+          <div class="mode-title center-title">
+            <span>📝</span>
+            <div>
+              <h2 class="quiz-title">Simulasi TOEFL</h2>
+              <p>Latihan soal TOEFL dari dasar sampai menengah: structure, written expression, vocabulary, reading, dan listening.</p>
+            </div>
+          </div>
+
+          <div id="toefl-start-panel" class="toefl-panel active">
+            <div class="toefl-hero-card">
+              <span class="card-label">TOEFL Practice Center</span>
+              <h3>Pilih Mode Simulasi</h3>
+              <p>Mode latihan menampilkan pembahasan setelah menjawab. Mode simulasi menampilkan hasil dan review di akhir.</p>
+
+              <div class="toefl-setting-grid">
+                <label>
+                  <span>Mode</span>
+                  <select id="toefl-mode-select" class="tense-select">
+                    <option value="practice">Latihan Cepat + Pembahasan</option>
+                    <option value="mini">Mini Test</option>
+                    <option value="full">Full Simulation</option>
+                  </select>
+                </label>
+
+                <label>
+                  <span>Jenis Soal</span>
+                  <select id="toefl-section-select" class="tense-select">
+                    <option value="all">Campuran Semua Jenis</option>
+                    <option value="Structure">Structure</option>
+                    <option value="Written Expression">Written Expression</option>
+                    <option value="Vocabulary">Vocabulary</option>
+                    <option value="Reading">Reading</option>
+                    <option value="Listening">Listening</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="toefl-info-grid">
+                <div><strong id="toefl-bank-count">0</strong><span>Soal tersedia</span></div>
+                <div><strong>Random</strong><span>Tidak mudah berulang</span></div>
+                <div><strong>Review</strong><span>Ada pembahasan</span></div>
+              </div>
+
+              <button class="action-btn success-btn" onclick="startToeflSimulation()">Mulai Simulasi</button>
+            </div>
+
+            <div class="toefl-section-preview">
+              <div><b>Structure</b><span>Melengkapi kalimat dengan grammar yang benar.</span></div>
+              <div><b>Written Expression</b><span>Menemukan bagian yang salah dalam kalimat.</span></div>
+              <div><b>Vocabulary</b><span>Memilih arti/sinonim sesuai konteks.</span></div>
+              <div><b>Reading</b><span>Menjawab pertanyaan berdasarkan bacaan.</span></div>
+              <div><b>Listening</b><span>Mendengar kalimat/dialog lalu memilih jawaban.</span></div>
+            </div>
+          </div>
+
+          <div id="toefl-quiz-panel" class="toefl-panel">
+            <div class="toefl-status-card">
+              <div>
+                <span class="card-label" id="toefl-current-section">SECTION</span>
+                <h3 id="toefl-progress-text">Soal 1/10</h3>
+              </div>
+              <div class="toefl-timer" id="toefl-timer">00:00</div>
+            </div>
+
+            <div class="progress-bar-container toefl-progress-wrap">
+              <div id="toefl-progress-bar" class="progress-bar" style="width:0%"></div>
+            </div>
+
+            <div id="toefl-question-card" class="toefl-question-card"></div>
+            <div id="toefl-options" class="toefl-options"></div>
+            <div id="toefl-feedback" class="toefl-feedback hidden"></div>
+
+            <div class="toefl-action-row">
+              <button class="action-btn danger-btn" onclick="skipToeflQuestion()">Lewati</button>
+              <button class="action-btn success-btn" id="toefl-next-btn" onclick="nextToeflQuestion()" disabled>Lanjut</button>
+            </div>
+          </div>
+
+          <div id="toefl-result-panel" class="toefl-panel">
+            <div class="toefl-result-card">
+              <span class="card-label">Hasil Simulasi</span>
+              <h3 id="toefl-final-score">Skor 0/0</h3>
+              <p id="toefl-final-message"></p>
+              <div class="toefl-info-grid">
+                <div><strong id="toefl-correct-count">0</strong><span>Benar</span></div>
+                <div><strong id="toefl-wrong-count">0</strong><span>Salah</span></div>
+                <div><strong id="toefl-percent-score">0%</strong><span>Nilai</span></div>
+              </div>
+              <button class="action-btn success-btn" onclick="openToeflSimulation()">Ulangi Simulasi</button>
+            </div>
+
+            <div class="foundation-section-title">Review Jawaban</div>
+            <div id="toefl-review-list" class="toefl-review-list"></div>
+          </div>
+        </section>
+      </main>
+
       <main id="dictionary-screen" class="screen">
         <header class="top-nav">
           <button class="icon-btn" onclick="goHome()">⬅️ Keluar</button>
@@ -904,8 +1022,10 @@
             <input
               type="text"
               id="dictionary-input"
-              placeholder="Ketik kata Inggris, contoh: school"
+              placeholder="Ketik Inggris/Indonesia, contoh: school atau sekolah"
               autocomplete="off"
+              oninput="translateDictionaryWord(true)"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();translateDictionaryWord(false);}"
             />
             <button
               class="action-btn success-btn"
