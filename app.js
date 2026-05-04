@@ -10,13 +10,157 @@ const sfxWrong = new Audio(
 
 function playSound(type) {
   if (type === "correct") {
+    if (typeof playUISound === "function") playUISound("correct");
     sfxCorrect.currentTime = 0;
     sfxCorrect.play().catch(() => {});
   } else if (type === "wrong") {
+    if (typeof playUISound === "function") playUISound("wrong");
     sfxWrong.currentTime = 0;
     sfxWrong.play().catch(() => {});
+  } else if (typeof playUISound === "function") {
+    playUISound(type);
   }
 }
+
+// ================= UI SOUND EFFECTS =================
+// Efek suara dibuat dengan Web Audio API agar tidak perlu file audio tambahan.
+// Suara aktif setelah user melakukan klik pertama di browser.
+let uiAudioContext = null;
+let sfxEnabled = localStorage.getItem("linguafunSfxEnabled") !== "false";
+
+function getUiAudioContext() {
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (!AudioCtx) return null;
+  if (!uiAudioContext) uiAudioContext = new AudioCtx();
+  if (uiAudioContext.state === "suspended") {
+    uiAudioContext.resume().catch(() => {});
+  }
+  return uiAudioContext;
+}
+
+function playTone(freq, start, duration, type = "sine", volume = 0.05) {
+  if (!sfxEnabled) return;
+  const ctx = getUiAudioContext();
+  if (!ctx) return;
+
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(freq, ctx.currentTime + start);
+
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime + start);
+  gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + start + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + start + duration);
+
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+
+  oscillator.start(ctx.currentTime + start);
+  oscillator.stop(ctx.currentTime + start + duration + 0.03);
+}
+
+function playUISound(type = "tap") {
+  if (!sfxEnabled) return;
+
+  const patterns = {
+    tap: [
+      [520, 0, 0.055, "sine", 0.035],
+    ],
+    menu: [
+      [440, 0, 0.06, "sine", 0.035],
+      [660, 0.055, 0.075, "sine", 0.04],
+      [880, 0.13, 0.09, "triangle", 0.035],
+    ],
+    page: [
+      [392, 0, 0.08, "triangle", 0.035],
+      [523, 0.07, 0.1, "triangle", 0.04],
+    ],
+    tab: [
+      [620, 0, 0.045, "sine", 0.03],
+      [740, 0.045, 0.055, "sine", 0.032],
+    ],
+    answer: [
+      [700, 0, 0.045, "square", 0.025],
+    ],
+    coin: [
+      [784, 0, 0.06, "sine", 0.04],
+      [1046, 0.06, 0.08, "sine", 0.045],
+    ],
+    back: [
+      [440, 0, 0.055, "triangle", 0.03],
+      [330, 0.05, 0.075, "triangle", 0.03],
+    ],
+    mic: [
+      [260, 0, 0.055, "sine", 0.035],
+      [520, 0.055, 0.08, "sine", 0.04],
+    ],
+    correct: [
+      [523, 0, 0.065, "sine", 0.035],
+      [659, 0.06, 0.075, "sine", 0.04],
+      [784, 0.13, 0.11, "triangle", 0.045],
+    ],
+    wrong: [
+      [240, 0, 0.11, "sawtooth", 0.025],
+      [180, 0.09, 0.13, "sawtooth", 0.022],
+    ],
+  };
+
+  (patterns[type] || patterns.tap).forEach(([freq, start, duration, wave, volume]) => {
+    playTone(freq, start, duration, wave, volume);
+  });
+}
+
+function toggleSfx() {
+  sfxEnabled = !sfxEnabled;
+  localStorage.setItem("linguafunSfxEnabled", String(sfxEnabled));
+  updateSfxToggleUI();
+  if (sfxEnabled) playUISound("coin");
+}
+
+function updateSfxToggleUI() {
+  const btn = document.getElementById("sfx-toggle-btn");
+  if (!btn) return;
+  btn.innerHTML = sfxEnabled ? "🔊" : "🔇";
+  btn.title = sfxEnabled ? "Matikan sound effect" : "Nyalakan sound effect";
+  btn.setAttribute("aria-label", btn.title);
+}
+
+function setupUISoundEffects() {
+  if (document.getElementById("sfx-toggle-btn")) return;
+
+  const btn = document.createElement("button");
+  btn.id = "sfx-toggle-btn";
+  btn.className = "sfx-toggle-btn";
+  btn.type = "button";
+  btn.onclick = (event) => {
+    event.stopPropagation();
+    toggleSfx();
+  };
+  document.body.appendChild(btn);
+  updateSfxToggleUI();
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!target) return;
+    if (target.closest("#sfx-toggle-btn")) return;
+
+    const clickable = target.closest("button, a, .menu-card, .shortcut-pill, .flashcard-container, .clickable-word, .foundation-tense-clickable, .word-chip, .tense-word-pill, .option-btn");
+    if (!clickable) return;
+
+    if (clickable.closest(".menu-card, .shortcut-pill")) playUISound("menu");
+    else if (clickable.closest(".foundation-tab, .home-filter-chip")) playUISound("tab");
+    else if (clickable.closest(".big-mic-btn, .mic-btn, #btn-mic, #btn-translate-mic, #btn-conv-mic")) playUISound("mic");
+    else if (clickable.closest(".success-btn, .btn-right")) playUISound("coin");
+    else if (clickable.closest(".danger-btn, .btn-wrong")) playUISound("back");
+    else if (clickable.closest(".option-btn, .word-chip, .tense-word-pill")) playUISound("answer");
+    else if (clickable.textContent && /kembali|keluar|batal/i.test(clickable.textContent)) playUISound("back");
+    else playUISound("tap");
+  }, true);
+}
+
+document.addEventListener("DOMContentLoaded", setupUISoundEffects);
+setTimeout(setupUISoundEffects, 500);
 
 // ================= STATS PLAYER =================
 let savedXP = parseInt(localStorage.getItem("userXP"));
@@ -617,7 +761,7 @@ function getRandomQuestionsNoRepeat(data, count, storageKey) {
       item.en || item.idText || item.audioText || item.title || item.word,
     ),
   );
-  const newRecent = [...recent, ...selectedKeys].slice(-30);
+  const newRecent = [...recent, ...selectedKeys].slice(-120);
   localStorage.setItem(storageKey, JSON.stringify(newRecent));
 
   return selected;
@@ -1237,13 +1381,19 @@ async function loadListening(index) {
   lsProgress.style.width = (index / currentSessionData.length) * 100 + "%";
   const data = currentSessionData[index];
   lsOptions.innerHTML = "";
-  data.options.forEach((optText, i) => {
+
+  const optionItems = (data.options || [])
+    .map((optText, i) => ({ text: optText, isCorrect: i === data.answer }))
+    .sort(() => Math.random() - 0.5);
+
+  optionItems.forEach((option) => {
     const btn = document.createElement("button");
     btn.className = "option-btn";
-    btn.innerText = optText;
-    btn.onclick = () => checkListeningAnswer(i, data.answer);
+    btn.innerText = option.text;
+    btn.onclick = () => checkListeningAnswer(option.isCorrect, data.answer);
     lsOptions.appendChild(btn);
   });
+
   playListeningAudio();
 }
 
@@ -1256,10 +1406,14 @@ function playListeningAudio() {
   window.speechSynthesis.speak(u);
 }
 
-async function checkListeningAnswer(selectedIndex, correctIndex) {
-  if (selectedIndex === correctIndex) {
+async function checkListeningAnswer(selectedValue, correctIndex) {
+  const data = currentSessionData[currentListeningIndex];
+  const isCorrect =
+    typeof selectedValue === "boolean" ? selectedValue : selectedValue === correctIndex;
+
+  if (isCorrect) {
     playSound("correct");
-    userXP += currentSessionData[currentListeningIndex].poin || 10;
+    userXP += data.poin || 10;
     addHeart(1);
     currentListeningIndex++;
     loadListening(currentListeningIndex);
@@ -1268,8 +1422,7 @@ async function checkListeningAnswer(selectedIndex, correctIndex) {
     userHearts--;
     updateStatsUI();
     await showAlert(
-      "Jawaban yang benar: " +
-        currentSessionData[currentListeningIndex].options[correctIndex],
+      "Jawaban yang benar: " + data.options[correctIndex],
       "wrong",
       "❌",
       "Oops, Salah!",
@@ -1982,10 +2135,17 @@ function getFoundationTenseDetail(lesson) {
   const library = foundationTenseDetailLibrary[lesson.name];
   const fallback = buildDefaultTenseDetail(lesson);
   if (!library) return fallback;
+  const seenExamples = new Set();
+  const mergedExamples = [...(library.examples || []), ...(fallback.examples || [])].filter((example) => {
+    const key = String(example.en || "").toLowerCase();
+    if (!key || seenExamples.has(key)) return false;
+    seenExamples.add(key);
+    return true;
+  });
   return {
     intro: library.intro || fallback.intro,
     whenToUse: library.whenToUse || fallback.whenToUse,
-    examples: library.examples || fallback.examples,
+    examples: mergedExamples.length ? mergedExamples : fallback.examples,
     notes: library.notes || fallback.notes,
     vocabulary: library.vocabulary || fallback.vocabulary
   };
@@ -2875,48 +3035,455 @@ function speakDictionaryWord(text) {
   window.speechSynthesis.speak(u);
 }
 
-function translateDictionaryWord() {
-  const word = dictionaryInput.value.trim();
-  if (word === "") {
-    showAlert(
-      "Masukkan kata bahasa Inggris terlebih dahulu!",
-      "warning",
-      "📚",
-      "Input Kosong",
-    );
-    return;
+function getAllDictionaryWords() {
+  const merged = [];
+  const seen = new Set();
+
+  function addWords(list) {
+    (list || []).forEach((item) => {
+      if (!item || !item.en || !item.id) return;
+      const key = String(item.en).toLowerCase().trim();
+      if (seen.has(key)) return;
+      seen.add(key);
+      merged.push(item);
+    });
   }
-  if (userXP < 10) {
-    showAlert(
-      "Butuh 10 XP untuk menerjemahkan kata.",
-      "warning",
-      "💸",
-      "XP Kurang!",
-    );
+
+  addWords(appDatabase.dictionary);
+  addWords(appDatabase.vocabularies);
+  addWords(appDatabase.foundationVocabulary);
+  return merged;
+}
+
+function normalizeDictionaryQuery(text) {
+  if (!text) return "";
+  if (typeof normalizeAnswerText === "function") {
+    return normalizeAnswerText(text, { lang: "id" });
+  }
+  return String(text)
+    .toLowerCase()
+    .replace(/[.,!?'"()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function findDictionaryMatches(query) {
+  const q = normalizeDictionaryQuery(query);
+  if (!q) return [];
+  const words = getAllDictionaryWords();
+
+  return words
+    .map((item) => {
+      const en = normalizeDictionaryQuery(item.en);
+      const id = normalizeDictionaryQuery(item.id);
+      let score = 0;
+
+      if (en === q || id === q) score = 100;
+      else if (en.startsWith(q) || id.startsWith(q)) score = 85;
+      else if (en.includes(q) || id.includes(q)) score = 65;
+      else if (q.includes(en) || q.includes(id)) score = 45;
+
+      return { item, score };
+    })
+    .filter((row) => row.score > 0)
+    .sort((a, b) => b.score - a.score || a.item.en.length - b.item.en.length)
+    .map((row) => row.item);
+}
+
+function translateDictionaryWord(silent = false) {
+  const word = dictionaryInput ? dictionaryInput.value.trim() : "";
+  if (word === "") {
+    if (dictionaryResult) {
+      dictionaryResult.classList.add("hidden");
+      dictionaryResult.innerHTML = "";
+    }
+    if (!silent) {
+      showAlert(
+        "Masukkan kata bahasa Inggris atau bahasa Indonesia terlebih dahulu!",
+        "warning",
+        "📚",
+        "Input Kosong",
+      );
+    }
     return;
   }
 
-  userXP -= 10;
-  updateStatsUI();
-  const words = appDatabase.dictionary || appDatabase.vocabularies || [];
-  const localResult = words.find(
-    (item) => item.en.toLowerCase() === word.toLowerCase(),
-  );
+  const matches = findDictionaryMatches(word).slice(0, 10);
+  if (!dictionaryResult) return;
   dictionaryResult.classList.remove("hidden");
 
-  if (localResult) {
-    dictionaryResult.innerHTML = `<div class="xp-cost">-10 XP</div>
-      <h3>${localResult.en}</h3><p>${localResult.id}</p>
-      <button onclick="speakDictionaryWord('${localResult.en.replace(/'/g, "\\'")}')">🔊 Dengarkan</button>`;
-  } else {
-    const googleUrl = `https://translate.google.com/?sl=en&tl=id&text=${encodeURIComponent(word)}&op=translate`;
-    dictionaryResult.innerHTML = `<div class="xp-cost">-10 XP</div>
-      <h3>${word}</h3><p>Kata ini belum ada di kamus lokal.</p>
-      <a href="${googleUrl}" target="_blank" class="google-translate-link">Terjemahkan dengan Google Translate / AI</a>`;
+  if (matches.length > 0) {
+    const rows = matches
+      .map((item) => {
+        const example = item.example || makeExampleSentence(item.en);
+        return `<div class="dictionary-live-row">
+          <div>
+            <h3>${item.en}</h3>
+            <p>${item.id}</p>
+            <small>${item.wordClass ? item.wordClass + " • " : ""}${item.category || "Kosakata"}</small>
+            <em>${example}</em>
+          </div>
+          <button onclick="speakDictionaryWord('${String(item.en).replace(/'/g, "\\'")}')">🔊</button>
+        </div>`;
+      })
+      .join("");
+
+    dictionaryResult.innerHTML = `<div class="dictionary-live-badge">Hasil kamus lokal</div>${rows}`;
+    return;
   }
+
+  const googleUrl = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(word)}&op=translate`;
+  dictionaryResult.innerHTML = `<div class="dictionary-live-badge">Belum ada di kamus lokal</div>
+    <h3>${word}</h3>
+    <p>Kamus lokal sekarang bisa mencari Indonesia → Inggris dan Inggris → Indonesia. Kata ini belum ditemukan di data lokal.</p>
+    <a href="${googleUrl}" target="_blank" class="google-translate-link">Terjemahkan otomatis</a>`;
+}
+
+function setupDictionaryLiveSearch() {
+  if (!dictionaryInput) return;
+  let typingTimer;
+  dictionaryInput.addEventListener("input", () => {
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => translateDictionaryWord(true), 180);
+  });
+  dictionaryInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      translateDictionaryWord(false);
+    }
+  });
 }
 
 
 if (document.getElementById("home-menu-grid")) {
   setHomeMenuFilter("all", document.querySelector(".home-filter-chip.active"));
 }
+
+
+setupDictionaryLiveSearch();
+
+
+// ================= TOEFL SIMULATION FEATURE =================
+let toeflSession = [];
+let toeflCurrentIndex = 0;
+let toeflAnswers = [];
+let toeflTimerInterval = null;
+let toeflRemainingSeconds = 0;
+let toeflCurrentMode = "practice";
+
+function openToeflSimulation() {
+  const screen = document.getElementById("toefl-screen");
+  if (!screen) {
+    showAlert("Halaman Simulasi TOEFL belum tersedia.", "warning", "📝", "Fitur Belum Ada");
+    return;
+  }
+  stopToeflTimer();
+  updateToeflBankCount();
+  showToeflPanel("start");
+  const mini = document.getElementById("tf-score-mini");
+  if (mini) mini.textContent = "0";
+  switchScreen(homeScreen, screen);
+}
+
+function updateToeflBankCount() {
+  const countEl = document.getElementById("toefl-bank-count");
+  const section = document.getElementById("toefl-section-select")?.value || "all";
+  const total = getToeflQuestionPool(section).length;
+  if (countEl) countEl.textContent = total;
+}
+
+function getToeflQuestionPool(section = "all") {
+  const bank = appDatabase.toeflSimulation || [];
+  if (section === "all") return bank;
+  return bank.filter((item) => item.section === section);
+}
+
+function showToeflPanel(panelName) {
+  ["start", "quiz", "result"].forEach((name) => {
+    const panel = document.getElementById(`toefl-${name}-panel`);
+    if (panel) panel.classList.toggle("active", name === panelName);
+  });
+}
+
+function getToeflModeConfig(mode) {
+  if (mode === "full") return { count: 50, seconds: 60 * 60, reviewAfterEach: false };
+  if (mode === "mini") return { count: 25, seconds: 30 * 60, reviewAfterEach: false };
+  return { count: 10, seconds: 15 * 60, reviewAfterEach: true };
+}
+
+function startToeflSimulation() {
+  const mode = document.getElementById("toefl-mode-select")?.value || "practice";
+  const section = document.getElementById("toefl-section-select")?.value || "all";
+  const config = getToeflModeConfig(mode);
+  const pool = getToeflQuestionPool(section);
+
+  if (pool.length === 0) {
+    showAlert("Belum ada soal untuk kategori ini.", "warning", "📝", "Soal Kosong");
+    return;
+  }
+
+  toeflCurrentMode = mode;
+  toeflSession = getRandomQuestionsNoRepeat(pool, Math.min(config.count, pool.length), `recent_toefl_${section}_${mode}`);
+  toeflCurrentIndex = 0;
+  toeflAnswers = [];
+  toeflRemainingSeconds = config.seconds;
+
+  showToeflPanel("quiz");
+  startToeflTimer();
+  renderToeflQuestion();
+  if (typeof playUISound === "function") playUISound("page");
+}
+
+function startToeflTimer() {
+  stopToeflTimer();
+  updateToeflTimerUI();
+  toeflTimerInterval = setInterval(() => {
+    toeflRemainingSeconds--;
+    updateToeflTimerUI();
+    if (toeflRemainingSeconds <= 0) {
+      stopToeflTimer();
+      finishToeflSimulation();
+    }
+  }, 1000);
+}
+
+function stopToeflTimer() {
+  if (toeflTimerInterval) clearInterval(toeflTimerInterval);
+  toeflTimerInterval = null;
+}
+
+function updateToeflTimerUI() {
+  const timer = document.getElementById("toefl-timer");
+  if (!timer) return;
+  const min = Math.floor(Math.max(0, toeflRemainingSeconds) / 60);
+  const sec = Math.max(0, toeflRemainingSeconds) % 60;
+  timer.textContent = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  timer.classList.toggle("danger", toeflRemainingSeconds <= 60);
+}
+
+function renderToeflQuestion() {
+  const question = toeflSession[toeflCurrentIndex];
+  if (!question) {
+    finishToeflSimulation();
+    return;
+  }
+
+  const progress = document.getElementById("toefl-progress-text");
+  const bar = document.getElementById("toefl-progress-bar");
+  const section = document.getElementById("toefl-current-section");
+  const card = document.getElementById("toefl-question-card");
+  const options = document.getElementById("toefl-options");
+  const feedback = document.getElementById("toefl-feedback");
+  const nextBtn = document.getElementById("toefl-next-btn");
+  const mini = document.getElementById("tf-score-mini");
+
+  if (progress) progress.textContent = `Soal ${toeflCurrentIndex + 1}/${toeflSession.length}`;
+  if (bar) bar.style.width = `${(toeflCurrentIndex / toeflSession.length) * 100}%`;
+  if (section) section.textContent = `${question.section} • ${question.type}`;
+  if (mini) mini.textContent = `${countToeflCorrect()}/${toeflAnswers.length}`;
+
+  if (feedback) {
+    feedback.classList.add("hidden");
+    feedback.innerHTML = "";
+  }
+  if (nextBtn) nextBtn.disabled = true;
+
+  let html = "";
+  if (question.passage) {
+    html += `<div class="toefl-passage">${escapeHtml(question.passage).replace(/\n/g, "<br>")}</div>`;
+  }
+  if (question.audioText) {
+    html += `<button class="small-audio-btn toefl-audio-btn" onclick="playToeflAudio()">🔊 Putar Audio</button>`;
+  }
+  html += `<h3>${escapeHtml(question.question)}</h3>`;
+  card.innerHTML = html;
+
+  options.innerHTML = "";
+  const optionItems = (question.options || []).map((text, index) => ({
+    text,
+    originalIndex: index,
+    isCorrect: index === question.answer,
+  })).sort(() => Math.random() - 0.5);
+
+  optionItems.forEach((option, displayIndex) => {
+    const btn = document.createElement("button");
+    btn.className = "toefl-option-btn";
+    btn.innerHTML = `<span>${String.fromCharCode(65 + displayIndex)}</span><p>${escapeHtml(option.text)}</p>`;
+    btn.onclick = () => chooseToeflAnswer(option.originalIndex, btn);
+    options.appendChild(btn);
+  });
+
+  if (question.audioText) {
+    setTimeout(playToeflAudio, 350);
+  }
+}
+
+function playToeflAudio() {
+  const question = toeflSession[toeflCurrentIndex];
+  if (!question || !question.audioText) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(question.audioText);
+  u.lang = "en-US";
+  u.rate = 0.82;
+  window.speechSynthesis.speak(u);
+  if (typeof playUISound === "function") playUISound("mic");
+}
+
+function chooseToeflAnswer(selectedIndex, button) {
+  const question = toeflSession[toeflCurrentIndex];
+  if (!question) return;
+
+  const isCorrect = selectedIndex === question.answer;
+  toeflAnswers[toeflCurrentIndex] = {
+    selectedIndex,
+    correctIndex: question.answer,
+    isCorrect,
+    question,
+  };
+
+  document.querySelectorAll(".toefl-option-btn").forEach((btn) => {
+    btn.disabled = true;
+    btn.classList.remove("selected");
+  });
+  button.classList.add("selected");
+
+  if (toeflCurrentMode === "practice") {
+    showToeflFeedback(isCorrect, question);
+    document.querySelectorAll(".toefl-option-btn").forEach((btn) => {
+      const text = btn.querySelector("p")?.textContent || "";
+      if (text === question.options[question.answer]) btn.classList.add("correct");
+    });
+    if (!isCorrect) button.classList.add("wrong");
+  }
+
+  if (isCorrect) {
+    if (typeof playUISound === "function") playUISound("correct");
+  } else {
+    if (typeof playUISound === "function") playUISound("wrong");
+  }
+
+  const nextBtn = document.getElementById("toefl-next-btn");
+  if (nextBtn) nextBtn.disabled = false;
+  const mini = document.getElementById("tf-score-mini");
+  if (mini) mini.textContent = `${countToeflCorrect()}/${toeflAnswers.filter(Boolean).length}`;
+}
+
+function showToeflFeedback(isCorrect, question) {
+  const feedback = document.getElementById("toefl-feedback");
+  if (!feedback) return;
+  feedback.className = `toefl-feedback ${isCorrect ? "correct" : "wrong"}`;
+  feedback.innerHTML = `<strong>${isCorrect ? "Benar!" : "Belum tepat."}</strong>
+    <p>Jawaban benar: <b>${escapeHtml(question.options[question.answer])}</b></p>
+    <p>${escapeHtml(question.explanation || "")}</p>`;
+}
+
+function nextToeflQuestion() {
+  if (!toeflAnswers[toeflCurrentIndex]) {
+    skipToeflQuestion();
+    return;
+  }
+
+  toeflCurrentIndex++;
+  if (toeflCurrentIndex >= toeflSession.length) finishToeflSimulation();
+  else renderToeflQuestion();
+}
+
+function skipToeflQuestion() {
+  const question = toeflSession[toeflCurrentIndex];
+  if (question && !toeflAnswers[toeflCurrentIndex]) {
+    toeflAnswers[toeflCurrentIndex] = {
+      selectedIndex: null,
+      correctIndex: question.answer,
+      isCorrect: false,
+      question,
+      skipped: true,
+    };
+  }
+  toeflCurrentIndex++;
+  if (toeflCurrentIndex >= toeflSession.length) finishToeflSimulation();
+  else renderToeflQuestion();
+}
+
+function countToeflCorrect() {
+  return toeflAnswers.filter((answer) => answer && answer.isCorrect).length;
+}
+
+function finishToeflSimulation() {
+  stopToeflTimer();
+  showToeflPanel("result");
+
+  const total = toeflSession.length;
+  const correct = countToeflCorrect();
+  const wrong = total - correct;
+  const percent = total ? Math.round((correct / total) * 100) : 0;
+
+  const finalScore = document.getElementById("toefl-final-score");
+  const finalMsg = document.getElementById("toefl-final-message");
+  const correctEl = document.getElementById("toefl-correct-count");
+  const wrongEl = document.getElementById("toefl-wrong-count");
+  const percentEl = document.getElementById("toefl-percent-score");
+  const bar = document.getElementById("toefl-progress-bar");
+
+  if (bar) bar.style.width = "100%";
+  if (finalScore) finalScore.textContent = `Skor ${correct}/${total}`;
+  if (correctEl) correctEl.textContent = correct;
+  if (wrongEl) wrongEl.textContent = wrong;
+  if (percentEl) percentEl.textContent = `${percent}%`;
+
+  let msg = "Terus latihan. Fokus pada pembahasan soal yang salah.";
+  if (percent >= 85) msg = "Luar biasa! Kamu sudah sangat siap untuk level dasar-menengah.";
+  else if (percent >= 70) msg = "Bagus! Tinggal perkuat bagian yang masih salah.";
+  else if (percent >= 50) msg = "Cukup baik. Ulangi materi grammar, vocabulary, dan reading.";
+  if (finalMsg) finalMsg.textContent = msg;
+
+  userXP += Math.max(10, correct * 3);
+  updateStatsUI();
+  renderToeflReview();
+  if (typeof playUISound === "function") playUISound("coin");
+}
+
+function renderToeflReview() {
+  const list = document.getElementById("toefl-review-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  toeflSession.forEach((question, index) => {
+    const answer = toeflAnswers[index] || {
+      selectedIndex: null,
+      correctIndex: question.answer,
+      isCorrect: false,
+      question,
+      skipped: true,
+    };
+
+    const item = document.createElement("div");
+    item.className = `toefl-review-item ${answer.isCorrect ? "correct" : "wrong"}`;
+    item.innerHTML = `<div class="toefl-review-head">
+        <strong>${index + 1}. ${escapeHtml(question.section)} — ${answer.isCorrect ? "Benar" : "Salah"}</strong>
+        <span>${escapeHtml(question.type)}</span>
+      </div>
+      <p class="review-question">${escapeHtml(question.question)}</p>
+      ${question.audioText ? `<p><b>Audio:</b> ${escapeHtml(question.audioText)}</p>` : ""}
+      <p><b>Jawaban kamu:</b> ${answer.selectedIndex === null ? "Dilewati" : escapeHtml(question.options[answer.selectedIndex])}</p>
+      <p><b>Jawaban benar:</b> ${escapeHtml(question.options[question.answer])}</p>
+      <p><b>Pembahasan:</b> ${escapeHtml(question.explanation || "")}</p>`;
+    list.appendChild(item);
+  });
+}
+
+function escapeHtml(text) {
+  return String(text || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+setTimeout(() => {
+  const sectionSelect = document.getElementById("toefl-section-select");
+  const modeSelect = document.getElementById("toefl-mode-select");
+  if (sectionSelect) sectionSelect.addEventListener("change", updateToeflBankCount);
+  if (modeSelect) modeSelect.addEventListener("change", updateToeflBankCount);
+  updateToeflBankCount();
+}, 600);
