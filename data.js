@@ -12061,3 +12061,1624 @@ function getRandomQuestions(arrayPath, limit, storageKey = null) {
 
   return selected;
 }
+
+
+// ================= BIG TOEFL DATA EXPANSION =================
+(function expandLinguaFunData() {
+  if (typeof appDatabase === 'undefined' || appDatabase.__bigToeflExpanded) return;
+  appDatabase.__bigToeflExpanded = true;
+  function addUnique(arrayName, items, keyFn) {
+    if (!Array.isArray(appDatabase[arrayName])) appDatabase[arrayName] = [];
+    const arr = appDatabase[arrayName];
+    const seen = new Set(arr.map((item) => keyFn(item)));
+    items.forEach((item) => { const key = keyFn(item); if (!seen.has(key)) { seen.add(key); arr.push(item); } });
+  }
+  const extraDictionary = [{"en": "ability", "id": "kemampuan"}, {"en": "able", "id": "mampu"}, {"en": "absence", "id": "ketidakhadiran"}, {"en": "absent", "id": "tidak hadir"}, {"en": "accept", "id": "menerima"}, {"en": "accident", "id": "kecelakaan"}, {"en": "according to", "id": "menurut"}, {"en": "account", "id": "akun/rekening/laporan"}, {"en": "achieve", "id": "mencapai"}, {"en": "achievement", "id": "pencapaian"}, {"en": "active", "id": "aktif"}, {"en": "activity", "id": "kegiatan"}, {"en": "actually", "id": "sebenarnya"}, {"en": "addition", "id": "tambahan"}, {"en": "additional", "id": "tambahan"}, {"en": "address", "id": "alamat/menangani"}, {"en": "advantage", "id": "keuntungan"}, {"en": "advice", "id": "nasihat"}, {"en": "advise", "id": "menasihati"}, {"en": "affect", "id": "mempengaruhi"}, {"en": "afford", "id": "mampu membeli"}, {"en": "agency", "id": "agensi/lembaga"}, {"en": "agreement", "id": "persetujuan"}, {"en": "allow", "id": "mengizinkan"}, {"en": "almost", "id": "hampir"}, {"en": "although", "id": "meskipun"}, {"en": "among", "id": "di antara banyak"}, {"en": "amount", "id": "jumlah"}, {"en": "ancient", "id": "kuno"}, {"en": "announce", "id": "mengumumkan"}, {"en": "annual", "id": "tahunan"}, {"en": "another", "id": "yang lain satu lagi"}, {"en": "anyway", "id": "bagaimanapun"}, {"en": "appear", "id": "muncul/tampak"}, {"en": "appearance", "id": "penampilan/kemunculan"}, {"en": "apply", "id": "mendaftar/menerapkan"}, {"en": "appointment", "id": "janji temu"}, {"en": "appreciate", "id": "menghargai"}, {"en": "approach", "id": "pendekatan/mendekati"}, {"en": "appropriate", "id": "tepat/sesuai"}, {"en": "argue", "id": "berpendapat/berdebat"}, {"en": "argument", "id": "argumen"}, {"en": "arrange", "id": "mengatur/menyusun"}, {"en": "arrangement", "id": "pengaturan"}, {"en": "aspect", "id": "aspek"}, {"en": "assess", "id": "menilai"}, {"en": "assessment", "id": "penilaian"}, {"en": "assignment", "id": "tugas"}, {"en": "assist", "id": "membantu"}, {"en": "assistance", "id": "bantuan"}, {"en": "assume", "id": "berasumsi"}, {"en": "attempt", "id": "upaya/mencoba"}, {"en": "attention", "id": "perhatian"}, {"en": "attitude", "id": "sikap"}, {"en": "available", "id": "tersedia"}, {"en": "avoid", "id": "menghindari"}, {"en": "background", "id": "latar belakang"}, {"en": "balance", "id": "keseimbangan"}, {"en": "behavior", "id": "perilaku"}, {"en": "benefit", "id": "manfaat"}, {"en": "besides", "id": "selain itu"}, {"en": "beyond", "id": "di luar/melebihi"}, {"en": "brief", "id": "singkat"}, {"en": "briefly", "id": "secara singkat"}, {"en": "budget", "id": "anggaran"}, {"en": "capacity", "id": "kapasitas"}, {"en": "career", "id": "karier"}, {"en": "case", "id": "kasus"}, {"en": "cause", "id": "penyebab/menyebabkan"}, {"en": "challenge", "id": "tantangan"}, {"en": "chance", "id": "kesempatan"}, {"en": "characteristic", "id": "ciri khas"}, {"en": "charge", "id": "biaya/mengisi daya"}, {"en": "choice", "id": "pilihan"}, {"en": "choose", "id": "memilih"}, {"en": "circumstance", "id": "keadaan"}, {"en": "claim", "id": "klaim/mengklaim"}, {"en": "clearly", "id": "dengan jelas"}, {"en": "client", "id": "klien"}, {"en": "combine", "id": "menggabungkan"}, {"en": "comfortable", "id": "nyaman"}, {"en": "common", "id": "umum"}, {"en": "community", "id": "komunitas"}, {"en": "compare", "id": "membandingkan"}, {"en": "comparison", "id": "perbandingan"}, {"en": "competition", "id": "kompetisi"}, {"en": "complete", "id": "lengkap/menyelesaikan"}, {"en": "complex", "id": "kompleks"}, {"en": "concern", "id": "kekhawatiran/berkaitan"}, {"en": "condition", "id": "kondisi/syarat"}, {"en": "conduct", "id": "melakukan/melaksanakan"}, {"en": "confidence", "id": "kepercayaan diri"}, {"en": "confident", "id": "percaya diri"}, {"en": "confirm", "id": "mengonfirmasi"}, {"en": "confuse", "id": "membingungkan"}, {"en": "connection", "id": "hubungan"}, {"en": "consequence", "id": "akibat"}, {"en": "consider", "id": "mempertimbangkan"}, {"en": "consist of", "id": "terdiri dari"}, {"en": "constant", "id": "tetap/konstan"}, {"en": "contain", "id": "berisi/mengandung"}, {"en": "contrast", "id": "perbedaan/membedakan"}, {"en": "contribute", "id": "berkontribusi"}, {"en": "convenient", "id": "nyaman/praktis"}, {"en": "creative", "id": "kreatif"}, {"en": "current", "id": "saat ini/arus"}, {"en": "currently", "id": "saat ini"}, {"en": "debate", "id": "debat"}, {"en": "decision", "id": "keputusan"}, {"en": "decrease", "id": "menurun/mengurangi"}, {"en": "define", "id": "mendefinisikan"}, {"en": "definition", "id": "definisi"}, {"en": "degree", "id": "tingkat/gelar"}, {"en": "deliver", "id": "mengirim/menyampaikan"}, {"en": "demand", "id": "permintaan/menuntut"}, {"en": "depend on", "id": "bergantung pada"}, {"en": "describe", "id": "menggambarkan/menjelaskan"}, {"en": "description", "id": "deskripsi"}, {"en": "despite", "id": "meskipun"}, {"en": "determine", "id": "menentukan"}, {"en": "develop", "id": "mengembangkan"}, {"en": "development", "id": "pengembangan"}, {"en": "difference", "id": "perbedaan"}, {"en": "difficulty", "id": "kesulitan"}, {"en": "direction", "id": "arah/petunjuk"}, {"en": "discuss", "id": "mendiskusikan"}, {"en": "discussion", "id": "diskusi"}, {"en": "distance", "id": "jarak"}, {"en": "distinguish", "id": "membedakan"}, {"en": "effective", "id": "efektif"}, {"en": "effort", "id": "usaha"}, {"en": "element", "id": "unsur"}, {"en": "emphasize", "id": "menekankan"}, {"en": "employee", "id": "pegawai"}, {"en": "employer", "id": "pemberi kerja"}, {"en": "enable", "id": "memungkinkan"}, {"en": "encourage", "id": "mendorong"}, {"en": "essential", "id": "penting/mendasar"}, {"en": "establish", "id": "menetapkan/mendirikan"}, {"en": "evidence", "id": "bukti"}, {"en": "examine", "id": "memeriksa/menelaah"}, {"en": "except", "id": "kecuali"}, {"en": "exchange", "id": "menukar/pertukaran"}, {"en": "exist", "id": "ada"}, {"en": "expect", "id": "mengharapkan"}, {"en": "experience", "id": "pengalaman/mengalami"}, {"en": "explanation", "id": "penjelasan"}, {"en": "expression", "id": "ungkapan"}, {"en": "factor", "id": "faktor"}, {"en": "failure", "id": "kegagalan"}, {"en": "familiar", "id": "akrab/kenal"}, {"en": "feature", "id": "fitur/ciri"}, {"en": "figure", "id": "angka/tokoh/gambar"}, {"en": "focus", "id": "fokus"}, {"en": "foreign", "id": "asing"}, {"en": "former", "id": "sebelumnya/mantan"}, {"en": "frequent", "id": "sering"}, {"en": "function", "id": "fungsi"}, {"en": "generally", "id": "secara umum"}, {"en": "government", "id": "pemerintah"}, {"en": "growth", "id": "pertumbuhan"}, {"en": "handle", "id": "menangani"}, {"en": "identify", "id": "mengidentifikasi"}, {"en": "immediate", "id": "segera/langsung"}, {"en": "impact", "id": "dampak"}, {"en": "include", "id": "termasuk/mencakup"}, {"en": "increase", "id": "meningkat/menambah"}, {"en": "indicate", "id": "menunjukkan"}, {"en": "individual", "id": "individu"}, {"en": "industry", "id": "industri"}, {"en": "influence", "id": "pengaruh/mempengaruhi"}, {"en": "instead", "id": "sebagai gantinya"}, {"en": "instruction", "id": "instruksi"}, {"en": "introduce", "id": "memperkenalkan"}, {"en": "issue", "id": "isu/masalah"}, {"en": "lack", "id": "kekurangan"}, {"en": "likely", "id": "kemungkinan besar"}, {"en": "limit", "id": "batas/membatasi"}, {"en": "maintain", "id": "mempertahankan"}, {"en": "majority", "id": "mayoritas"}, {"en": "manage", "id": "mengelola"}, {"en": "manner", "id": "cara/sikap"}, {"en": "methodology", "id": "metodologi"}, {"en": "necessary", "id": "perlu"}, {"en": "notice", "id": "memperhatikan/pemberitahuan"}, {"en": "occur", "id": "terjadi"}, {"en": "opportunity", "id": "kesempatan"}, {"en": "organize", "id": "mengatur"}, {"en": "particular", "id": "khusus/tertentu"}, {"en": "perform", "id": "melakukan/menampilkan"}, {"en": "performance", "id": "kinerja/pertunjukan"}, {"en": "policy", "id": "kebijakan"}, {"en": "population", "id": "populasi"}, {"en": "potential", "id": "potensi"}, {"en": "predict", "id": "memprediksi"}, {"en": "previous", "id": "sebelumnya"}, {"en": "process", "id": "proses"}, {"en": "produce", "id": "menghasilkan"}, {"en": "progress", "id": "kemajuan"}, {"en": "proper", "id": "tepat/pantas"}, {"en": "provide", "id": "menyediakan/memberikan"}, {"en": "purpose", "id": "tujuan"}, {"en": "quality", "id": "kualitas"}, {"en": "quantity", "id": "jumlah/kuantitas"}, {"en": "range", "id": "rentang/jangkauan"}, {"en": "rare", "id": "langka/jarang"}, {"en": "rather", "id": "agak/lebih baik"}, {"en": "receive", "id": "menerima"}, {"en": "recognize", "id": "mengenali"}, {"en": "recommend", "id": "merekomendasikan"}, {"en": "reduce", "id": "mengurangi"}, {"en": "refer to", "id": "merujuk pada"}, {"en": "relationship", "id": "hubungan"}, {"en": "relevant", "id": "relevan"}, {"en": "remain", "id": "tetap/tersisa"}, {"en": "require", "id": "memerlukan"}, {"en": "research", "id": "penelitian"}, {"en": "respond", "id": "menanggapi"}, {"en": "response", "id": "tanggapan"}, {"en": "review", "id": "meninjau/ulasan"}, {"en": "role", "id": "peran"}, {"en": "schedule", "id": "jadwal"}, {"en": "select", "id": "memilih"}, {"en": "similar", "id": "mirip"}, {"en": "solution", "id": "solusi"}, {"en": "source", "id": "sumber"}, {"en": "specific", "id": "spesifik"}, {"en": "strategy", "id": "strategi"}, {"en": "structure", "id": "struktur"}, {"en": "successful", "id": "berhasil"}, {"en": "sufficient", "id": "cukup/memadai"}, {"en": "suggest", "id": "menyarankan"}, {"en": "task", "id": "tugas"}, {"en": "therefore", "id": "oleh karena itu"}, {"en": "throughout", "id": "sepanjang"}, {"en": "toward", "id": "menuju/terhadap"}, {"en": "transfer", "id": "memindahkan/transfer"}, {"en": "unless", "id": "kecuali jika"}, {"en": "valid", "id": "sah/valid"}, {"en": "various", "id": "berbagai"}, {"en": "whereas", "id": "sedangkan"}, {"en": "whether", "id": "apakah"}, {"en": "within", "id": "di dalam/dalam waktu"}, {"en": "without", "id": "tanpa"}];
+  const extraVocabularies = [{"en": "ability", "id": "kemampuan", "poin": 10}, {"en": "able", "id": "mampu", "poin": 10}, {"en": "absence", "id": "ketidakhadiran", "poin": 10}, {"en": "absent", "id": "tidak hadir", "poin": 10}, {"en": "accept", "id": "menerima", "poin": 10}, {"en": "accident", "id": "kecelakaan", "poin": 20}, {"en": "according to", "id": "menurut", "poin": 20}, {"en": "account", "id": "akun/rekening/laporan", "poin": 10}, {"en": "achieve", "id": "mencapai", "poin": 10}, {"en": "achievement", "id": "pencapaian", "poin": 20}, {"en": "active", "id": "aktif", "poin": 10}, {"en": "activity", "id": "kegiatan", "poin": 20}, {"en": "actually", "id": "sebenarnya", "poin": 20}, {"en": "addition", "id": "tambahan", "poin": 20}, {"en": "additional", "id": "tambahan", "poin": 20}, {"en": "address", "id": "alamat/menangani", "poin": 10}, {"en": "advantage", "id": "keuntungan", "poin": 20}, {"en": "advice", "id": "nasihat", "poin": 10}, {"en": "advise", "id": "menasihati", "poin": 10}, {"en": "affect", "id": "mempengaruhi", "poin": 10}, {"en": "afford", "id": "mampu membeli", "poin": 10}, {"en": "agency", "id": "agensi/lembaga", "poin": 10}, {"en": "agreement", "id": "persetujuan", "poin": 20}, {"en": "allow", "id": "mengizinkan", "poin": 10}, {"en": "almost", "id": "hampir", "poin": 10}, {"en": "although", "id": "meskipun", "poin": 20}, {"en": "among", "id": "di antara banyak", "poin": 10}, {"en": "amount", "id": "jumlah", "poin": 10}, {"en": "ancient", "id": "kuno", "poin": 10}, {"en": "announce", "id": "mengumumkan", "poin": 20}, {"en": "annual", "id": "tahunan", "poin": 10}, {"en": "another", "id": "yang lain satu lagi", "poin": 10}, {"en": "anyway", "id": "bagaimanapun", "poin": 10}, {"en": "appear", "id": "muncul/tampak", "poin": 10}, {"en": "appearance", "id": "penampilan/kemunculan", "poin": 20}, {"en": "apply", "id": "mendaftar/menerapkan", "poin": 10}, {"en": "appointment", "id": "janji temu", "poin": 20}, {"en": "appreciate", "id": "menghargai", "poin": 20}, {"en": "approach", "id": "pendekatan/mendekati", "poin": 20}, {"en": "appropriate", "id": "tepat/sesuai", "poin": 20}, {"en": "argue", "id": "berpendapat/berdebat", "poin": 10}, {"en": "argument", "id": "argumen", "poin": 20}, {"en": "arrange", "id": "mengatur/menyusun", "poin": 10}, {"en": "arrangement", "id": "pengaturan", "poin": 20}, {"en": "aspect", "id": "aspek", "poin": 10}, {"en": "assess", "id": "menilai", "poin": 10}, {"en": "assessment", "id": "penilaian", "poin": 20}, {"en": "assignment", "id": "tugas", "poin": 20}, {"en": "assist", "id": "membantu", "poin": 10}, {"en": "assistance", "id": "bantuan", "poin": 20}, {"en": "assume", "id": "berasumsi", "poin": 10}, {"en": "attempt", "id": "upaya/mencoba", "poin": 10}, {"en": "attention", "id": "perhatian", "poin": 20}, {"en": "attitude", "id": "sikap", "poin": 20}, {"en": "available", "id": "tersedia", "poin": 20}, {"en": "avoid", "id": "menghindari", "poin": 10}, {"en": "background", "id": "latar belakang", "poin": 20}, {"en": "balance", "id": "keseimbangan", "poin": 10}, {"en": "behavior", "id": "perilaku", "poin": 20}, {"en": "benefit", "id": "manfaat", "poin": 10}, {"en": "besides", "id": "selain itu", "poin": 10}, {"en": "beyond", "id": "di luar/melebihi", "poin": 10}, {"en": "brief", "id": "singkat", "poin": 10}, {"en": "briefly", "id": "secara singkat", "poin": 10}, {"en": "budget", "id": "anggaran", "poin": 10}, {"en": "capacity", "id": "kapasitas", "poin": 20}, {"en": "career", "id": "karier", "poin": 10}, {"en": "case", "id": "kasus", "poin": 10}, {"en": "cause", "id": "penyebab/menyebabkan", "poin": 10}, {"en": "challenge", "id": "tantangan", "poin": 20}, {"en": "chance", "id": "kesempatan", "poin": 10}, {"en": "characteristic", "id": "ciri khas", "poin": 20}, {"en": "charge", "id": "biaya/mengisi daya", "poin": 10}, {"en": "choice", "id": "pilihan", "poin": 10}, {"en": "choose", "id": "memilih", "poin": 10}, {"en": "circumstance", "id": "keadaan", "poin": 20}, {"en": "claim", "id": "klaim/mengklaim", "poin": 10}, {"en": "clearly", "id": "dengan jelas", "poin": 10}, {"en": "client", "id": "klien", "poin": 10}, {"en": "combine", "id": "menggabungkan", "poin": 10}, {"en": "comfortable", "id": "nyaman", "poin": 20}, {"en": "common", "id": "umum", "poin": 10}, {"en": "community", "id": "komunitas", "poin": 20}, {"en": "compare", "id": "membandingkan", "poin": 10}, {"en": "comparison", "id": "perbandingan", "poin": 20}, {"en": "competition", "id": "kompetisi", "poin": 20}, {"en": "complete", "id": "lengkap/menyelesaikan", "poin": 20}, {"en": "complex", "id": "kompleks", "poin": 10}, {"en": "concern", "id": "kekhawatiran/berkaitan", "poin": 10}, {"en": "condition", "id": "kondisi/syarat", "poin": 20}, {"en": "conduct", "id": "melakukan/melaksanakan", "poin": 10}, {"en": "confidence", "id": "kepercayaan diri", "poin": 20}, {"en": "confident", "id": "percaya diri", "poin": 20}, {"en": "confirm", "id": "mengonfirmasi", "poin": 10}, {"en": "confuse", "id": "membingungkan", "poin": 10}, {"en": "connection", "id": "hubungan", "poin": 20}, {"en": "consequence", "id": "akibat", "poin": 20}, {"en": "consider", "id": "mempertimbangkan", "poin": 20}, {"en": "consist of", "id": "terdiri dari", "poin": 20}, {"en": "constant", "id": "tetap/konstan", "poin": 20}, {"en": "contain", "id": "berisi/mengandung", "poin": 10}, {"en": "contrast", "id": "perbedaan/membedakan", "poin": 20}, {"en": "contribute", "id": "berkontribusi", "poin": 20}, {"en": "convenient", "id": "nyaman/praktis", "poin": 20}, {"en": "creative", "id": "kreatif", "poin": 20}, {"en": "current", "id": "saat ini/arus", "poin": 10}, {"en": "currently", "id": "saat ini", "poin": 20}, {"en": "debate", "id": "debat", "poin": 10}, {"en": "decision", "id": "keputusan", "poin": 20}, {"en": "decrease", "id": "menurun/mengurangi", "poin": 20}, {"en": "define", "id": "mendefinisikan", "poin": 10}, {"en": "definition", "id": "definisi", "poin": 20}, {"en": "degree", "id": "tingkat/gelar", "poin": 10}, {"en": "deliver", "id": "mengirim/menyampaikan", "poin": 10}, {"en": "demand", "id": "permintaan/menuntut", "poin": 10}, {"en": "depend on", "id": "bergantung pada", "poin": 20}, {"en": "describe", "id": "menggambarkan/menjelaskan", "poin": 20}, {"en": "description", "id": "deskripsi", "poin": 20}, {"en": "despite", "id": "meskipun", "poin": 10}, {"en": "determine", "id": "menentukan", "poin": 20}, {"en": "develop", "id": "mengembangkan", "poin": 10}, {"en": "development", "id": "pengembangan", "poin": 20}, {"en": "difference", "id": "perbedaan", "poin": 20}, {"en": "difficulty", "id": "kesulitan", "poin": 20}, {"en": "direction", "id": "arah/petunjuk", "poin": 20}, {"en": "discuss", "id": "mendiskusikan", "poin": 10}, {"en": "discussion", "id": "diskusi", "poin": 20}, {"en": "distance", "id": "jarak", "poin": 20}, {"en": "distinguish", "id": "membedakan", "poin": 20}, {"en": "effective", "id": "efektif", "poin": 20}, {"en": "effort", "id": "usaha", "poin": 10}, {"en": "element", "id": "unsur", "poin": 10}, {"en": "emphasize", "id": "menekankan", "poin": 20}, {"en": "employee", "id": "pegawai", "poin": 20}, {"en": "employer", "id": "pemberi kerja", "poin": 20}, {"en": "enable", "id": "memungkinkan", "poin": 10}, {"en": "encourage", "id": "mendorong", "poin": 20}, {"en": "essential", "id": "penting/mendasar", "poin": 20}, {"en": "establish", "id": "menetapkan/mendirikan", "poin": 20}, {"en": "evidence", "id": "bukti", "poin": 20}, {"en": "examine", "id": "memeriksa/menelaah", "poin": 10}, {"en": "except", "id": "kecuali", "poin": 10}, {"en": "exchange", "id": "menukar/pertukaran", "poin": 20}, {"en": "exist", "id": "ada", "poin": 10}, {"en": "expect", "id": "mengharapkan", "poin": 10}, {"en": "experience", "id": "pengalaman/mengalami", "poin": 20}, {"en": "explanation", "id": "penjelasan", "poin": 20}, {"en": "expression", "id": "ungkapan", "poin": 20}, {"en": "factor", "id": "faktor", "poin": 10}, {"en": "failure", "id": "kegagalan", "poin": 10}, {"en": "familiar", "id": "akrab/kenal", "poin": 20}, {"en": "feature", "id": "fitur/ciri", "poin": 10}, {"en": "figure", "id": "angka/tokoh/gambar", "poin": 10}, {"en": "focus", "id": "fokus", "poin": 10}, {"en": "foreign", "id": "asing", "poin": 10}, {"en": "former", "id": "sebelumnya/mantan", "poin": 10}, {"en": "frequent", "id": "sering", "poin": 20}, {"en": "function", "id": "fungsi", "poin": 20}, {"en": "generally", "id": "secara umum", "poin": 20}, {"en": "government", "id": "pemerintah", "poin": 20}, {"en": "growth", "id": "pertumbuhan", "poin": 10}, {"en": "handle", "id": "menangani", "poin": 10}, {"en": "identify", "id": "mengidentifikasi", "poin": 20}, {"en": "immediate", "id": "segera/langsung", "poin": 20}, {"en": "impact", "id": "dampak", "poin": 10}, {"en": "include", "id": "termasuk/mencakup", "poin": 10}, {"en": "increase", "id": "meningkat/menambah", "poin": 20}, {"en": "indicate", "id": "menunjukkan", "poin": 20}, {"en": "individual", "id": "individu", "poin": 20}, {"en": "industry", "id": "industri", "poin": 20}, {"en": "influence", "id": "pengaruh/mempengaruhi", "poin": 20}, {"en": "instead", "id": "sebagai gantinya", "poin": 10}, {"en": "instruction", "id": "instruksi", "poin": 20}, {"en": "introduce", "id": "memperkenalkan", "poin": 20}, {"en": "issue", "id": "isu/masalah", "poin": 10}, {"en": "lack", "id": "kekurangan", "poin": 10}, {"en": "likely", "id": "kemungkinan besar", "poin": 10}, {"en": "limit", "id": "batas/membatasi", "poin": 10}, {"en": "maintain", "id": "mempertahankan", "poin": 20}, {"en": "majority", "id": "mayoritas", "poin": 20}, {"en": "manage", "id": "mengelola", "poin": 10}, {"en": "manner", "id": "cara/sikap", "poin": 10}, {"en": "methodology", "id": "metodologi", "poin": 20}, {"en": "necessary", "id": "perlu", "poin": 20}, {"en": "notice", "id": "memperhatikan/pemberitahuan", "poin": 10}, {"en": "occur", "id": "terjadi", "poin": 10}, {"en": "opportunity", "id": "kesempatan", "poin": 20}, {"en": "organize", "id": "mengatur", "poin": 20}, {"en": "particular", "id": "khusus/tertentu", "poin": 20}, {"en": "perform", "id": "melakukan/menampilkan", "poin": 10}, {"en": "performance", "id": "kinerja/pertunjukan", "poin": 20}, {"en": "policy", "id": "kebijakan", "poin": 10}, {"en": "population", "id": "populasi", "poin": 20}, {"en": "potential", "id": "potensi", "poin": 20}, {"en": "predict", "id": "memprediksi", "poin": 10}, {"en": "previous", "id": "sebelumnya", "poin": 20}, {"en": "process", "id": "proses", "poin": 10}, {"en": "produce", "id": "menghasilkan", "poin": 10}, {"en": "progress", "id": "kemajuan", "poin": 20}, {"en": "proper", "id": "tepat/pantas", "poin": 10}, {"en": "provide", "id": "menyediakan/memberikan", "poin": 10}, {"en": "purpose", "id": "tujuan", "poin": 10}, {"en": "quality", "id": "kualitas", "poin": 10}, {"en": "quantity", "id": "jumlah/kuantitas", "poin": 20}, {"en": "range", "id": "rentang/jangkauan", "poin": 10}, {"en": "rare", "id": "langka/jarang", "poin": 10}, {"en": "rather", "id": "agak/lebih baik", "poin": 10}, {"en": "receive", "id": "menerima", "poin": 10}, {"en": "recognize", "id": "mengenali", "poin": 20}, {"en": "recommend", "id": "merekomendasikan", "poin": 20}, {"en": "reduce", "id": "mengurangi", "poin": 10}, {"en": "refer to", "id": "merujuk pada", "poin": 20}, {"en": "relationship", "id": "hubungan", "poin": 20}, {"en": "relevant", "id": "relevan", "poin": 20}, {"en": "remain", "id": "tetap/tersisa", "poin": 10}, {"en": "require", "id": "memerlukan", "poin": 10}, {"en": "research", "id": "penelitian", "poin": 20}, {"en": "respond", "id": "menanggapi", "poin": 10}, {"en": "response", "id": "tanggapan", "poin": 20}, {"en": "review", "id": "meninjau/ulasan", "poin": 10}, {"en": "role", "id": "peran", "poin": 10}, {"en": "schedule", "id": "jadwal", "poin": 20}, {"en": "select", "id": "memilih", "poin": 10}, {"en": "similar", "id": "mirip", "poin": 10}, {"en": "solution", "id": "solusi", "poin": 20}, {"en": "source", "id": "sumber", "poin": 10}, {"en": "specific", "id": "spesifik", "poin": 20}, {"en": "strategy", "id": "strategi", "poin": 20}, {"en": "structure", "id": "struktur", "poin": 20}, {"en": "successful", "id": "berhasil", "poin": 20}, {"en": "sufficient", "id": "cukup/memadai", "poin": 20}, {"en": "suggest", "id": "menyarankan", "poin": 10}, {"en": "task", "id": "tugas", "poin": 10}, {"en": "therefore", "id": "oleh karena itu", "poin": 20}, {"en": "throughout", "id": "sepanjang", "poin": 20}, {"en": "toward", "id": "menuju/terhadap", "poin": 10}, {"en": "transfer", "id": "memindahkan/transfer", "poin": 20}, {"en": "unless", "id": "kecuali jika", "poin": 10}, {"en": "valid", "id": "sah/valid", "poin": 10}, {"en": "various", "id": "berbagai", "poin": 10}, {"en": "whereas", "id": "sedangkan", "poin": 10}, {"en": "whether", "id": "apakah", "poin": 10}, {"en": "within", "id": "di dalam/dalam waktu", "poin": 10}, {"en": "without", "id": "tanpa", "poin": 10}];
+  const extraFoundationVocabulary = [{"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "ability", "id": "kemampuan", "example": "The word 'ability' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "able", "id": "mampu", "example": "The word 'able' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "absence", "id": "ketidakhadiran", "example": "The word 'absence' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "absent", "id": "tidak hadir", "example": "The word 'absent' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "accept", "id": "menerima", "example": "The word 'accept' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "accident", "id": "kecelakaan", "example": "The word 'accident' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "according to", "id": "menurut", "example": "The word 'according to' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "account", "id": "akun/rekening/laporan", "example": "The word 'account' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "achieve", "id": "mencapai", "example": "The word 'achieve' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "achievement", "id": "pencapaian", "example": "The word 'achievement' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "active", "id": "aktif", "example": "The word 'active' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "activity", "id": "kegiatan", "example": "The word 'activity' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "actually", "id": "sebenarnya", "example": "The word 'actually' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "addition", "id": "tambahan", "example": "The word 'addition' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "additional", "id": "tambahan", "example": "The word 'additional' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "address", "id": "alamat/menangani", "example": "The word 'address' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "advantage", "id": "keuntungan", "example": "The word 'advantage' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "advice", "id": "nasihat", "example": "The word 'advice' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "advise", "id": "menasihati", "example": "The word 'advise' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "affect", "id": "mempengaruhi", "example": "The word 'affect' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "afford", "id": "mampu membeli", "example": "The word 'afford' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "agency", "id": "agensi/lembaga", "example": "The word 'agency' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "agreement", "id": "persetujuan", "example": "The word 'agreement' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "allow", "id": "mengizinkan", "example": "The word 'allow' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "almost", "id": "hampir", "example": "The word 'almost' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "conjunction", "en": "although", "id": "meskipun", "example": "The word 'although' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "among", "id": "di antara banyak", "example": "The word 'among' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "amount", "id": "jumlah", "example": "The word 'amount' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "ancient", "id": "kuno", "example": "The word 'ancient' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "announce", "id": "mengumumkan", "example": "The word 'announce' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "annual", "id": "tahunan", "example": "The word 'annual' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "determiner", "en": "another", "id": "yang lain satu lagi", "example": "The word 'another' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "anyway", "id": "bagaimanapun", "example": "The word 'anyway' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "appear", "id": "muncul/tampak", "example": "The word 'appear' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "appearance", "id": "penampilan/kemunculan", "example": "The word 'appearance' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "apply", "id": "mendaftar/menerapkan", "example": "The word 'apply' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "appointment", "id": "janji temu", "example": "The word 'appointment' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "appreciate", "id": "menghargai", "example": "The word 'appreciate' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "approach", "id": "pendekatan/mendekati", "example": "The word 'approach' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "appropriate", "id": "tepat/sesuai", "example": "The word 'appropriate' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "argue", "id": "berpendapat/berdebat", "example": "The word 'argue' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "argument", "id": "argumen", "example": "The word 'argument' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "arrange", "id": "mengatur/menyusun", "example": "The word 'arrange' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "arrangement", "id": "pengaturan", "example": "The word 'arrangement' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "aspect", "id": "aspek", "example": "The word 'aspect' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "assess", "id": "menilai", "example": "The word 'assess' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "assessment", "id": "penilaian", "example": "The word 'assessment' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "assignment", "id": "tugas", "example": "The word 'assignment' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "assist", "id": "membantu", "example": "The word 'assist' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "assistance", "id": "bantuan", "example": "The word 'assistance' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "assume", "id": "berasumsi", "example": "The word 'assume' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "attempt", "id": "upaya/mencoba", "example": "The word 'attempt' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "attention", "id": "perhatian", "example": "The word 'attention' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "attitude", "id": "sikap", "example": "The word 'attitude' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "available", "id": "tersedia", "example": "The word 'available' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "avoid", "id": "menghindari", "example": "The word 'avoid' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "background", "id": "latar belakang", "example": "The word 'background' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "balance", "id": "keseimbangan", "example": "The word 'balance' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "behavior", "id": "perilaku", "example": "The word 'behavior' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "benefit", "id": "manfaat", "example": "The word 'benefit' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "besides", "id": "selain itu", "example": "The word 'besides' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "beyond", "id": "di luar/melebihi", "example": "The word 'beyond' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "brief", "id": "singkat", "example": "The word 'brief' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "briefly", "id": "secara singkat", "example": "The word 'briefly' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "budget", "id": "anggaran", "example": "The word 'budget' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "capacity", "id": "kapasitas", "example": "The word 'capacity' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "career", "id": "karier", "example": "The word 'career' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "case", "id": "kasus", "example": "The word 'case' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "cause", "id": "penyebab/menyebabkan", "example": "The word 'cause' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "challenge", "id": "tantangan", "example": "The word 'challenge' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "chance", "id": "kesempatan", "example": "The word 'chance' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/adjective", "en": "characteristic", "id": "ciri khas", "example": "The word 'characteristic' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "charge", "id": "biaya/mengisi daya", "example": "The word 'charge' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "choice", "id": "pilihan", "example": "The word 'choice' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "choose", "id": "memilih", "example": "The word 'choose' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "circumstance", "id": "keadaan", "example": "The word 'circumstance' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "claim", "id": "klaim/mengklaim", "example": "The word 'claim' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "clearly", "id": "dengan jelas", "example": "The word 'clearly' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "client", "id": "klien", "example": "The word 'client' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "combine", "id": "menggabungkan", "example": "The word 'combine' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "comfortable", "id": "nyaman", "example": "The word 'comfortable' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "common", "id": "umum", "example": "The word 'common' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "community", "id": "komunitas", "example": "The word 'community' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "compare", "id": "membandingkan", "example": "The word 'compare' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "comparison", "id": "perbandingan", "example": "The word 'comparison' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "competition", "id": "kompetisi", "example": "The word 'competition' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective/verb", "en": "complete", "id": "lengkap/menyelesaikan", "example": "The word 'complete' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "complex", "id": "kompleks", "example": "The word 'complex' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "concern", "id": "kekhawatiran/berkaitan", "example": "The word 'concern' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "condition", "id": "kondisi/syarat", "example": "The word 'condition' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "conduct", "id": "melakukan/melaksanakan", "example": "The word 'conduct' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "confidence", "id": "kepercayaan diri", "example": "The word 'confidence' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "confident", "id": "percaya diri", "example": "The word 'confident' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "confirm", "id": "mengonfirmasi", "example": "The word 'confirm' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "confuse", "id": "membingungkan", "example": "The word 'confuse' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "connection", "id": "hubungan", "example": "The word 'connection' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "consequence", "id": "akibat", "example": "The word 'consequence' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "consider", "id": "mempertimbangkan", "example": "The word 'consider' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "verb phrase", "en": "consist of", "id": "terdiri dari", "example": "The word 'consist of' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "constant", "id": "tetap/konstan", "example": "The word 'constant' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "contain", "id": "berisi/mengandung", "example": "The word 'contain' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "contrast", "id": "perbedaan/membedakan", "example": "The word 'contrast' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "contribute", "id": "berkontribusi", "example": "The word 'contribute' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "convenient", "id": "nyaman/praktis", "example": "The word 'convenient' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "creative", "id": "kreatif", "example": "The word 'creative' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective/noun", "en": "current", "id": "saat ini/arus", "example": "The word 'current' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "currently", "id": "saat ini", "example": "The word 'currently' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "debate", "id": "debat", "example": "The word 'debate' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "decision", "id": "keputusan", "example": "The word 'decision' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "decrease", "id": "menurun/mengurangi", "example": "The word 'decrease' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "define", "id": "mendefinisikan", "example": "The word 'define' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "definition", "id": "definisi", "example": "The word 'definition' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "degree", "id": "tingkat/gelar", "example": "The word 'degree' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "deliver", "id": "mengirim/menyampaikan", "example": "The word 'deliver' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "demand", "id": "permintaan/menuntut", "example": "The word 'demand' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "verb phrase", "en": "depend on", "id": "bergantung pada", "example": "The word 'depend on' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "describe", "id": "menggambarkan/menjelaskan", "example": "The word 'describe' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "description", "id": "deskripsi", "example": "The word 'description' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "despite", "id": "meskipun", "example": "The word 'despite' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "determine", "id": "menentukan", "example": "The word 'determine' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "develop", "id": "mengembangkan", "example": "The word 'develop' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "development", "id": "pengembangan", "example": "The word 'development' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "difference", "id": "perbedaan", "example": "The word 'difference' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "difficulty", "id": "kesulitan", "example": "The word 'difficulty' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "direction", "id": "arah/petunjuk", "example": "The word 'direction' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "discuss", "id": "mendiskusikan", "example": "The word 'discuss' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "discussion", "id": "diskusi", "example": "The word 'discussion' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "distance", "id": "jarak", "example": "The word 'distance' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "distinguish", "id": "membedakan", "example": "The word 'distinguish' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "effective", "id": "efektif", "example": "The word 'effective' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "effort", "id": "usaha", "example": "The word 'effort' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "element", "id": "unsur", "example": "The word 'element' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "emphasize", "id": "menekankan", "example": "The word 'emphasize' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "employee", "id": "pegawai", "example": "The word 'employee' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "employer", "id": "pemberi kerja", "example": "The word 'employer' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "enable", "id": "memungkinkan", "example": "The word 'enable' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "encourage", "id": "mendorong", "example": "The word 'encourage' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "essential", "id": "penting/mendasar", "example": "The word 'essential' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "establish", "id": "menetapkan/mendirikan", "example": "The word 'establish' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "evidence", "id": "bukti", "example": "The word 'evidence' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "examine", "id": "memeriksa/menelaah", "example": "The word 'examine' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "except", "id": "kecuali", "example": "The word 'except' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb/noun", "en": "exchange", "id": "menukar/pertukaran", "example": "The word 'exchange' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "exist", "id": "ada", "example": "The word 'exist' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "expect", "id": "mengharapkan", "example": "The word 'expect' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "experience", "id": "pengalaman/mengalami", "example": "The word 'experience' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "explanation", "id": "penjelasan", "example": "The word 'explanation' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "expression", "id": "ungkapan", "example": "The word 'expression' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "factor", "id": "faktor", "example": "The word 'factor' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "failure", "id": "kegagalan", "example": "The word 'failure' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "familiar", "id": "akrab/kenal", "example": "The word 'familiar' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "feature", "id": "fitur/ciri", "example": "The word 'feature' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "figure", "id": "angka/tokoh/gambar", "example": "The word 'figure' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "focus", "id": "fokus", "example": "The word 'focus' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "foreign", "id": "asing", "example": "The word 'foreign' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "former", "id": "sebelumnya/mantan", "example": "The word 'former' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "frequent", "id": "sering", "example": "The word 'frequent' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "function", "id": "fungsi", "example": "The word 'function' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "generally", "id": "secara umum", "example": "The word 'generally' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "government", "id": "pemerintah", "example": "The word 'government' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "growth", "id": "pertumbuhan", "example": "The word 'growth' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "handle", "id": "menangani", "example": "The word 'handle' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "identify", "id": "mengidentifikasi", "example": "The word 'identify' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "immediate", "id": "segera/langsung", "example": "The word 'immediate' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "impact", "id": "dampak", "example": "The word 'impact' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "include", "id": "termasuk/mencakup", "example": "The word 'include' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "increase", "id": "meningkat/menambah", "example": "The word 'increase' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "indicate", "id": "menunjukkan", "example": "The word 'indicate' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/adjective", "en": "individual", "id": "individu", "example": "The word 'individual' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "industry", "id": "industri", "example": "The word 'industry' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "influence", "id": "pengaruh/mempengaruhi", "example": "The word 'influence' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "instead", "id": "sebagai gantinya", "example": "The word 'instead' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "instruction", "id": "instruksi", "example": "The word 'instruction' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "introduce", "id": "memperkenalkan", "example": "The word 'introduce' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "issue", "id": "isu/masalah", "example": "The word 'issue' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "lack", "id": "kekurangan", "example": "The word 'lack' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective/adverb", "en": "likely", "id": "kemungkinan besar", "example": "The word 'likely' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/verb", "en": "limit", "id": "batas/membatasi", "example": "The word 'limit' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "maintain", "id": "mempertahankan", "example": "The word 'maintain' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "majority", "id": "mayoritas", "example": "The word 'majority' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "manage", "id": "mengelola", "example": "The word 'manage' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "manner", "id": "cara/sikap", "example": "The word 'manner' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "methodology", "id": "metodologi", "example": "The word 'methodology' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "necessary", "id": "perlu", "example": "The word 'necessary' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb/noun", "en": "notice", "id": "memperhatikan/pemberitahuan", "example": "The word 'notice' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "occur", "id": "terjadi", "example": "The word 'occur' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "opportunity", "id": "kesempatan", "example": "The word 'opportunity' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "organize", "id": "mengatur", "example": "The word 'organize' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "particular", "id": "khusus/tertentu", "example": "The word 'particular' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "perform", "id": "melakukan/menampilkan", "example": "The word 'perform' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "performance", "id": "kinerja/pertunjukan", "example": "The word 'performance' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "policy", "id": "kebijakan", "example": "The word 'policy' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "population", "id": "populasi", "example": "The word 'population' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun/adjective", "en": "potential", "id": "potensi", "example": "The word 'potential' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "predict", "id": "memprediksi", "example": "The word 'predict' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "previous", "id": "sebelumnya", "example": "The word 'previous' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "process", "id": "proses", "example": "The word 'process' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "produce", "id": "menghasilkan", "example": "The word 'produce' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "progress", "id": "kemajuan", "example": "The word 'progress' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "proper", "id": "tepat/pantas", "example": "The word 'proper' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "provide", "id": "menyediakan/memberikan", "example": "The word 'provide' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "purpose", "id": "tujuan", "example": "The word 'purpose' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "quality", "id": "kualitas", "example": "The word 'quality' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "quantity", "id": "jumlah/kuantitas", "example": "The word 'quantity' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "range", "id": "rentang/jangkauan", "example": "The word 'range' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "rare", "id": "langka/jarang", "example": "The word 'rare' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "rather", "id": "agak/lebih baik", "example": "The word 'rather' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "receive", "id": "menerima", "example": "The word 'receive' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "recognize", "id": "mengenali", "example": "The word 'recognize' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "recommend", "id": "merekomendasikan", "example": "The word 'recommend' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "reduce", "id": "mengurangi", "example": "The word 'reduce' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "verb phrase", "en": "refer to", "id": "merujuk pada", "example": "The word 'refer to' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "relationship", "id": "hubungan", "example": "The word 'relationship' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "relevant", "id": "relevan", "example": "The word 'relevant' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "remain", "id": "tetap/tersisa", "example": "The word 'remain' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "require", "id": "memerlukan", "example": "The word 'require' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "research", "id": "penelitian", "example": "The word 'research' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "respond", "id": "menanggapi", "example": "The word 'respond' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "response", "id": "tanggapan", "example": "The word 'response' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb/noun", "en": "review", "id": "meninjau/ulasan", "example": "The word 'review' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "role", "id": "peran", "example": "The word 'role' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "schedule", "id": "jadwal", "example": "The word 'schedule' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "select", "id": "memilih", "example": "The word 'select' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "similar", "id": "mirip", "example": "The word 'similar' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "solution", "id": "solusi", "example": "The word 'solution' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "source", "id": "sumber", "example": "The word 'source' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "specific", "id": "spesifik", "example": "The word 'specific' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "strategy", "id": "strategi", "example": "The word 'strategy' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "structure", "id": "struktur", "example": "The word 'structure' is useful for English practice."}, {"level": "Intermediate", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "successful", "id": "berhasil", "example": "The word 'successful' is useful for English practice."}, {"level": "Academic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "sufficient", "id": "cukup/memadai", "example": "The word 'sufficient' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb", "en": "suggest", "id": "menyarankan", "example": "The word 'suggest' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "noun", "en": "task", "id": "tugas", "example": "The word 'task' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "adverb", "en": "therefore", "id": "oleh karena itu", "example": "The word 'therefore' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "throughout", "id": "sepanjang", "example": "The word 'throughout' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "toward", "id": "menuju/terhadap", "example": "The word 'toward' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "verb/noun", "en": "transfer", "id": "memindahkan/transfer", "example": "The word 'transfer' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "conjunction", "en": "unless", "id": "kecuali jika", "example": "The word 'unless' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "valid", "id": "sah/valid", "example": "The word 'valid' is useful for English practice."}, {"level": "Basic", "category": "Expanded TOEFL Word Bank", "wordClass": "adjective", "en": "various", "id": "berbagai", "example": "The word 'various' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "conjunction", "en": "whereas", "id": "sedangkan", "example": "The word 'whereas' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "conjunction", "en": "whether", "id": "apakah", "example": "The word 'whether' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "within", "id": "di dalam/dalam waktu", "example": "The word 'within' is useful for English practice."}, {"level": "TOEFL", "category": "Expanded TOEFL Word Bank", "wordClass": "preposition", "en": "without", "id": "tanpa", "example": "The word 'without' is useful for English practice."}];
+  const extraGrammar = [{"idText": "Saya bermain sepak bola setiap Minggu", "enCorrect": ["I", "play", "football", "every", "Sunday"], "jumbled": ["I", "play", "football", "every", "Sunday", "is", "are", "have"], "hint": "Materi: Simple Present. Pola: Subject + V1 + Object + Time.", "poin": 20}, {"idText": "Dia belajar bahasa Inggris setiap malam", "enCorrect": ["She", "studies", "English", "every", "night"], "jumbled": ["She", "studies", "English", "every", "night", "is", "are", "have"], "hint": "Materi: Simple Present. Pola: Subject + V-s/es + Object + Time.", "poin": 20}, {"idText": "Mereka biasanya sarapan bersama", "enCorrect": ["They", "usually", "eat", "breakfast", "together"], "jumbled": ["They", "usually", "eat", "breakfast", "together", "is", "are", "have"], "hint": "Materi: Simple Present. Pola: Subject + adverb + V1 + Object.", "poin": 20}, {"idText": "Kami tidak menonton televisi pada pagi hari", "enCorrect": ["We", "do", "not", "watch", "television", "in", "the", "morning"], "jumbled": ["We", "do", "not", "watch", "television", "in", "the", "morning", "is", "are", "have"], "hint": "Materi: Simple Present Negative. Pola: Subject + do not + V1.", "poin": 20}, {"idText": "Apakah dia pergi ke sekolah dengan bus", "enCorrect": ["Does", "she", "go", "to", "school", "by", "bus"], "jumbled": ["Does", "she", "go", "to", "school", "by", "bus", "is", "are", "have"], "hint": "Materi: Simple Present Question. Pola: Does + subject + V1.", "poin": 20}, {"idText": "Saya sedang membaca buku sekarang", "enCorrect": ["I", "am", "reading", "a", "book", "now"], "jumbled": ["I", "am", "reading", "a", "book", "now", "is", "are", "have"], "hint": "Materi: Present Continuous. Pola: Subject + am/is/are + V-ing.", "poin": 20}, {"idText": "Mereka sedang bermain di taman", "enCorrect": ["They", "are", "playing", "in", "the", "park"], "jumbled": ["They", "are", "playing", "in", "the", "park", "is", "are", "have"], "hint": "Materi: Present Continuous. Pola: Subject + are + V-ing.", "poin": 20}, {"idText": "Ibu saya sedang memasak makan malam", "enCorrect": ["My", "mother", "is", "cooking", "dinner"], "jumbled": ["My", "mother", "is", "cooking", "dinner", "is", "are", "have"], "hint": "Materi: Present Continuous. Pola: Subject + is + V-ing.", "poin": 20}, {"idText": "Dia tidak sedang tidur", "enCorrect": ["He", "is", "not", "sleeping"], "jumbled": ["He", "is", "not", "sleeping", "is", "are", "have"], "hint": "Materi: Present Continuous Negative. Pola: Subject + is not + V-ing.", "poin": 20}, {"idText": "Apakah kamu sedang mendengarkan saya", "enCorrect": ["Are", "you", "listening", "to", "me"], "jumbled": ["Are", "you", "listening", "to", "me", "is", "are", "have"], "hint": "Materi: Present Continuous Question. Pola: Are + subject + V-ing.", "poin": 20}, {"idText": "Saya telah menyelesaikan tugas saya", "enCorrect": ["I", "have", "finished", "my", "homework"], "jumbled": ["I", "have", "finished", "my", "homework", "is", "are", "have"], "hint": "Materi: Present Perfect. Pola: Subject + have/has + V3.", "poin": 20}, {"idText": "Dia sudah membeli kamus baru", "enCorrect": ["She", "has", "bought", "a", "new", "dictionary"], "jumbled": ["She", "has", "bought", "a", "new", "dictionary", "is", "are", "have"], "hint": "Materi: Present Perfect. Pola: Subject + has + V3 + Object.", "poin": 20}, {"idText": "Kami belum melihat film itu", "enCorrect": ["We", "have", "not", "seen", "that", "movie"], "jumbled": ["We", "have", "not", "seen", "that", "movie", "is", "are", "have"], "hint": "Materi: Present Perfect Negative. Pola: Subject + have not + V3.", "poin": 20}, {"idText": "Apakah mereka pernah mengunjungi Bali", "enCorrect": ["Have", "they", "ever", "visited", "Bali"], "jumbled": ["Have", "they", "ever", "visited", "Bali", "is", "are", "have"], "hint": "Materi: Present Perfect Question. Pola: Have + subject + ever + V3.", "poin": 20}, {"idText": "Dia telah belajar selama tiga jam", "enCorrect": ["She", "has", "been", "studying", "for", "three", "hours"], "jumbled": ["She", "has", "been", "studying", "for", "three", "hours", "is", "are", "have"], "hint": "Materi: Present Perfect Continuous. Pola: Subject + has been + V-ing.", "poin": 20}, {"idText": "Mereka telah menunggu sejak pagi", "enCorrect": ["They", "have", "been", "waiting", "since", "morning"], "jumbled": ["They", "have", "been", "waiting", "since", "morning", "is", "are", "have"], "hint": "Materi: Present Perfect Continuous. Pola: Subject + have been + V-ing.", "poin": 20}, {"idText": "Saya pergi ke sekolah kemarin", "enCorrect": ["I", "went", "to", "school", "yesterday"], "jumbled": ["I", "went", "to", "school", "yesterday", "is", "are", "have"], "hint": "Materi: Simple Past. Pola: Subject + V2 + Time.", "poin": 20}, {"idText": "Kami mengunjungi museum minggu lalu", "enCorrect": ["We", "visited", "the", "museum", "last", "week"], "jumbled": ["We", "visited", "the", "museum", "last", "week", "is", "are", "have"], "hint": "Materi: Simple Past. Pola: Subject + V2 + Object + Time.", "poin": 20}, {"idText": "Dia tidak datang ke kelas kemarin", "enCorrect": ["He", "did", "not", "come", "to", "class", "yesterday"], "jumbled": ["He", "did", "not", "come", "to", "class", "yesterday", "is", "are", "have"], "hint": "Materi: Simple Past Negative. Pola: Subject + did not + V1.", "poin": 20}, {"idText": "Apakah kamu membaca buku itu tadi malam", "enCorrect": ["Did", "you", "read", "that", "book", "last", "night"], "jumbled": ["Did", "you", "read", "that", "book", "last", "night", "is", "are", "have"], "hint": "Materi: Simple Past Question. Pola: Did + subject + V1.", "poin": 20}, {"idText": "Saya sedang belajar ketika dia menelepon", "enCorrect": ["I", "was", "studying", "when", "he", "called"], "jumbled": ["I", "was", "studying", "when", "he", "called", "is", "are", "have"], "hint": "Materi: Past Continuous. Pola: Subject + was/were + V-ing + when.", "poin": 20}, {"idText": "Mereka sedang menonton film pada pukul delapan", "enCorrect": ["They", "were", "watching", "a", "movie", "at", "eight"], "jumbled": ["They", "were", "watching", "a", "movie", "at", "eight", "is", "are", "have"], "hint": "Materi: Past Continuous. Pola: Subject + were + V-ing.", "poin": 20}, {"idText": "Dia sudah pergi sebelum saya tiba", "enCorrect": ["He", "had", "left", "before", "I", "arrived"], "jumbled": ["He", "had", "left", "before", "I", "arrived", "is", "are", "have"], "hint": "Materi: Past Perfect. Pola: Subject + had + V3.", "poin": 20}, {"idText": "Kami telah menyelesaikan pekerjaan itu sebelum guru datang", "enCorrect": ["We", "had", "finished", "the", "work", "before", "the", "teacher", "came"], "jumbled": ["We", "had", "finished", "the", "work", "before", "the", "teacher", "came", "is", "are", "have"], "hint": "Materi: Past Perfect. Pola: Subject + had + V3.", "poin": 20}, {"idText": "Mereka telah bekerja selama dua jam sebelum hujan mulai", "enCorrect": ["They", "had", "been", "working", "for", "two", "hours", "before", "it", "started", "raining"], "jumbled": ["They", "had", "been", "working", "for", "two", "hours", "before", "it", "started", "raining", "is", "are", "have"], "hint": "Materi: Past Perfect Continuous. Pola: Subject + had been + V-ing.", "poin": 20}, {"idText": "Saya akan belajar bahasa Inggris besok", "enCorrect": ["I", "will", "study", "English", "tomorrow"], "jumbled": ["I", "will", "study", "English", "tomorrow", "is", "are", "have"], "hint": "Materi: Simple Future. Pola: Subject + will + V1.", "poin": 20}, {"idText": "Dia akan membeli laptop baru minggu depan", "enCorrect": ["She", "will", "buy", "a", "new", "laptop", "next", "week"], "jumbled": ["She", "will", "buy", "a", "new", "laptop", "next", "week", "is", "are", "have"], "hint": "Materi: Simple Future. Pola: Subject + will + V1.", "poin": 20}, {"idText": "Kami tidak akan menyerah", "enCorrect": ["We", "will", "not", "give", "up"], "jumbled": ["We", "will", "not", "give", "up", "is", "are", "have"], "hint": "Materi: Simple Future Negative. Pola: Subject + will not + V1.", "poin": 20}, {"idText": "Apakah mereka akan datang malam ini", "enCorrect": ["Will", "they", "come", "tonight"], "jumbled": ["Will", "they", "come", "tonight", "is", "are", "have"], "hint": "Materi: Simple Future Question. Pola: Will + subject + V1.", "poin": 20}, {"idText": "Saya akan sedang belajar pada jam delapan malam", "enCorrect": ["I", "will", "be", "studying", "at", "eight", "tonight"], "jumbled": ["I", "will", "be", "studying", "at", "eight", "tonight", "is", "are", "have"], "hint": "Materi: Future Continuous. Pola: Subject + will be + V-ing.", "poin": 20}, {"idText": "Mereka akan sedang bepergian besok pagi", "enCorrect": ["They", "will", "be", "traveling", "tomorrow", "morning"], "jumbled": ["They", "will", "be", "traveling", "tomorrow", "morning", "is", "are", "have"], "hint": "Materi: Future Continuous. Pola: Subject + will be + V-ing.", "poin": 20}, {"idText": "Saya akan sudah menyelesaikan laporan ini besok", "enCorrect": ["I", "will", "have", "finished", "this", "report", "by", "tomorrow"], "jumbled": ["I", "will", "have", "finished", "this", "report", "by", "tomorrow", "is", "are", "have"], "hint": "Materi: Future Perfect. Pola: Subject + will have + V3.", "poin": 20}, {"idText": "Dia akan sudah tiba sebelum rapat dimulai", "enCorrect": ["She", "will", "have", "arrived", "before", "the", "meeting", "starts"], "jumbled": ["She", "will", "have", "arrived", "before", "the", "meeting", "starts", "is", "are", "have"], "hint": "Materi: Future Perfect. Pola: Subject + will have + V3.", "poin": 20}, {"idText": "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun", "enCorrect": ["By", "next", "year", "I", "will", "have", "been", "studying", "English", "for", "four", "years"], "jumbled": ["By", "next", "year", "I", "will", "have", "been", "studying", "English", "for", "four", "years", "is", "are", "have"], "hint": "Materi: Future Perfect Continuous. Pola: By + time + subject + will have been + V-ing.", "poin": 20}, {"idText": "Dia mengatakan bahwa dia akan belajar lebih giat", "enCorrect": ["She", "said", "that", "she", "would", "study", "harder"], "jumbled": ["She", "said", "that", "she", "would", "study", "harder", "is", "are", "have"], "hint": "Materi: Simple Past Future. Pola: Subject + said + would + V1.", "poin": 20}, {"idText": "Saya pikir mereka akan datang tepat waktu", "enCorrect": ["I", "thought", "they", "would", "arrive", "on", "time"], "jumbled": ["I", "thought", "they", "would", "arrive", "on", "time", "is", "are", "have"], "hint": "Materi: Simple Past Future. Pola: Subject + thought + would + V1.", "poin": 20}, {"idText": "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan", "enCorrect": ["He", "said", "that", "he", "would", "be", "working", "at", "eight"], "jumbled": ["He", "said", "that", "he", "would", "be", "working", "at", "eight", "is", "are", "have"], "hint": "Materi: Past Future Continuous. Pola: Subject + said + would be + V-ing.", "poin": 20}, {"idText": "Saya pikir dia akan sudah menyelesaikan tugas itu", "enCorrect": ["I", "thought", "she", "would", "have", "finished", "the", "task"], "jumbled": ["I", "thought", "she", "would", "have", "finished", "the", "task", "is", "are", "have"], "hint": "Materi: Past Future Perfect. Pola: Subject + thought + would have + V3.", "poin": 20}, {"idText": "Buku itu ditulis oleh seorang guru", "enCorrect": ["The", "book", "was", "written", "by", "a", "teacher"], "jumbled": ["The", "book", "was", "written", "by", "a", "teacher", "is", "are", "have"], "hint": "Materi: Passive Voice. Pola: Subject + be + V3 + by agent.", "poin": 20}, {"idText": "Pintu itu sedang diperbaiki", "enCorrect": ["The", "door", "is", "being", "repaired"], "jumbled": ["The", "door", "is", "being", "repaired", "is", "are", "have"], "hint": "Materi: Passive Voice. Pola: Subject + is being + V3.", "poin": 20}, {"idText": "Tugas itu telah dikumpulkan", "enCorrect": ["The", "assignment", "has", "been", "submitted"], "jumbled": ["The", "assignment", "has", "been", "submitted", "is", "are", "have"], "hint": "Materi: Passive Voice. Pola: Subject + has been + V3.", "poin": 20}, {"idText": "Dia pintar bukan", "enCorrect": ["She", "is", "smart", "is", "she", "not"], "jumbled": ["She", "is", "smart", "is", "she", "not", "is", "are", "have"], "hint": "Materi: Question Tag. Pola: Statement + tag.", "poin": 20}, {"idText": "Kamu suka bahasa Inggris bukan", "enCorrect": ["You", "like", "English", "do", "you", "not"], "jumbled": ["You", "like", "English", "do", "you", "not", "is", "are", "have"], "hint": "Materi: Question Tag. Pola: Statement + auxiliary + subject.", "poin": 20}, {"idText": "Buku ini lebih menarik daripada buku itu", "enCorrect": ["This", "book", "is", "more", "interesting", "than", "that", "book"], "jumbled": ["This", "book", "is", "more", "interesting", "than", "that", "book", "is", "are", "have"], "hint": "Materi: Degree Comparison. Pola: Comparative + than.", "poin": 20}, {"idText": "Dia adalah siswa paling rajin di kelas", "enCorrect": ["She", "is", "the", "most", "diligent", "student", "in", "the", "class"], "jumbled": ["She", "is", "the", "most", "diligent", "student", "in", "the", "class", "is", "are", "have"], "hint": "Materi: Degree Comparison. Pola: Superlative.", "poin": 20}, {"idText": "Dia berkata bahwa dia sedang belajar", "enCorrect": ["He", "said", "that", "he", "was", "studying"], "jumbled": ["He", "said", "that", "he", "was", "studying", "is", "are", "have"], "hint": "Materi: Direct Indirect. Pola: Said that + past continuous.", "poin": 20}, {"idText": "Saya lebih suka teh daripada kopi", "enCorrect": ["I", "prefer", "tea", "to", "coffee"], "jumbled": ["I", "prefer", "tea", "to", "coffee", "is", "are", "have"], "hint": "Materi: Preferences. Pola: Prefer + noun + to + noun.", "poin": 20}, {"idText": "Betapa indahnya hari ini", "enCorrect": ["What", "a", "beautiful", "day", "it", "is"], "jumbled": ["What", "a", "beautiful", "day", "it", "is", "is", "are", "have"], "hint": "Materi: Exclamatory. Pola: What + noun phrase.", "poin": 20}, {"idText": "Jika saya belajar saya akan lulus", "enCorrect": ["If", "I", "study", "I", "will", "pass"], "jumbled": ["If", "I", "study", "I", "will", "pass", "is", "are", "have"], "hint": "Materi: Conditional Type 1. Pola: If + simple present + will.", "poin": 20}, {"idText": "Jika saya punya waktu saya akan belajar", "enCorrect": ["If", "I", "had", "time", "I", "would", "study"], "jumbled": ["If", "I", "had", "time", "I", "would", "study", "is", "are", "have"], "hint": "Materi: Conditional Type 2. Pola: If + simple past + would.", "poin": 20}, {"idText": "Jika saya telah belajar saya akan lulus", "enCorrect": ["If", "I", "had", "studied", "I", "would", "have", "passed"], "jumbled": ["If", "I", "had", "studied", "I", "would", "have", "passed", "is", "are", "have"], "hint": "Materi: Conditional Type 3. Pola: If + past perfect + would have V3.", "poin": 20}, {"idText": "Setiap siswa harus membawa buku", "enCorrect": ["Each", "student", "must", "bring", "a", "book"], "jumbled": ["Each", "student", "must", "bring", "a", "book", "is", "are", "have"], "hint": "Materi: Each and Every. Pola: Each + singular noun.", "poin": 20}, {"idText": "Semua orang membutuhkan latihan", "enCorrect": ["Everyone", "needs", "practice"], "jumbled": ["Everyone", "needs", "practice", "is", "are", "have"], "hint": "Materi: Each and Every. Pola: Everyone + singular verb.", "poin": 20}, {"idText": "Ini adalah buku yang saya beli kemarin", "enCorrect": ["This", "is", "the", "book", "that", "I", "bought", "yesterday"], "jumbled": ["This", "is", "the", "book", "that", "I", "bought", "yesterday", "is", "are", "have"], "hint": "Materi: Relative Pronoun. Pola: Noun + that + clause.", "poin": 20}, {"idText": "Siswa yang duduk di depan adalah teman saya", "enCorrect": ["The", "student", "who", "sits", "in", "front", "is", "my", "friend"], "jumbled": ["The", "student", "who", "sits", "in", "front", "is", "my", "friend", "is", "are", "have"], "hint": "Materi: Relative Pronoun. Pola: Person + who + verb.", "poin": 20}, {"idText": "Saya terlambat karena hujan", "enCorrect": ["I", "was", "late", "because", "it", "rained"], "jumbled": ["I", "was", "late", "because", "it", "rained", "is", "are", "have"], "hint": "Materi: Because. Pola: Because + clause.", "poin": 20}, {"idText": "Saya terlambat karena hujan deras", "enCorrect": ["I", "was", "late", "because", "of", "the", "heavy", "rain"], "jumbled": ["I", "was", "late", "because", "of", "the", "heavy", "rain", "is", "are", "have"], "hint": "Materi: Because Of. Pola: Because of + noun phrase.", "poin": 20}, {"idText": "Saya membutuhkan buku lain", "enCorrect": ["I", "need", "another", "book"], "jumbled": ["I", "need", "another", "book", "is", "are", "have"], "hint": "Materi: Another Other Others. Pola: Another + singular noun.", "poin": 20}, {"idText": "Beberapa siswa belajar dan yang lainnya bermain", "enCorrect": ["Some", "students", "study", "and", "others", "play"], "jumbled": ["Some", "students", "study", "and", "others", "play", "is", "are", "have"], "hint": "Materi: Another Other Others. Pola: Others as pronoun.", "poin": 20}, {"idText": "Saya sedang mencari informasi penting", "enCorrect": ["I", "am", "looking", "for", "important", "information"], "jumbled": ["I", "am", "looking", "for", "important", "information", "is", "are", "have"], "hint": "Materi: Vocabulary Practice. Pola: Verb phrase + noun.", "poin": 20}, {"idText": "Guru menjelaskan pelajaran dengan jelas", "enCorrect": ["The", "teacher", "explains", "the", "lesson", "clearly"], "jumbled": ["The", "teacher", "explains", "the", "lesson", "clearly", "is", "are", "have"], "hint": "Materi: Grammar Practice. Pola: Subject + verb + object + adverb.", "poin": 20}, {"idText": "Para siswa mendengarkan guru dengan hati-hati", "enCorrect": ["The", "students", "listen", "to", "the", "teacher", "carefully"], "jumbled": ["The", "students", "listen", "to", "the", "teacher", "carefully", "is", "are", "have"], "hint": "Materi: Grammar Practice. Pola: Subject + verb + object + adverb.", "poin": 20}, {"idText": "Dia harus menyelesaikan pekerjaan rumah sebelum makan malam", "enCorrect": ["She", "must", "finish", "her", "homework", "before", "dinner"], "jumbled": ["She", "must", "finish", "her", "homework", "before", "dinner", "is", "are", "have"], "hint": "Materi: Modal. Pola: Subject + modal + V1.", "poin": 20}, {"idText": "Kita sebaiknya berlatih setiap hari", "enCorrect": ["We", "should", "practice", "every", "day"], "jumbled": ["We", "should", "practice", "every", "day", "is", "are", "have"], "hint": "Materi: Modal. Pola: Subject + should + V1.", "poin": 20}, {"idText": "Saya bisa memahami kalimat sederhana", "enCorrect": ["I", "can", "understand", "simple", "sentences"], "jumbled": ["I", "can", "understand", "simple", "sentences", "is", "are", "have"], "hint": "Materi: Modal. Pola: Subject + can + V1.", "poin": 20}, {"idText": "Mereka mungkin datang terlambat", "enCorrect": ["They", "may", "arrive", "late"], "jumbled": ["They", "may", "arrive", "late", "is", "are", "have"], "hint": "Materi: Modal. Pola: Subject + may + V1.", "poin": 20}, {"idText": "Dia tidak boleh menggunakan kamus selama ujian", "enCorrect": ["He", "must", "not", "use", "a", "dictionary", "during", "the", "test"], "jumbled": ["He", "must", "not", "use", "a", "dictionary", "during", "the", "test", "is", "are", "have"], "hint": "Materi: Modal Negative. Pola: Subject + must not + V1.", "poin": 20}, {"idText": "Tolong jelaskan arti kata ini", "enCorrect": ["Please", "explain", "the", "meaning", "of", "this", "word"], "jumbled": ["Please", "explain", "the", "meaning", "of", "this", "word", "is", "are", "have"], "hint": "Materi: Imperative. Pola: Please + V1.", "poin": 20}, {"idText": "Jangan menyerah ketika latihan sulit", "enCorrect": ["Do", "not", "give", "up", "when", "practice", "is", "difficult"], "jumbled": ["Do", "not", "give", "up", "when", "practice", "is", "difficult", "is", "are", "have"], "hint": "Materi: Imperative Negative. Pola: Do not + V1.", "poin": 20}, {"idText": "Meskipun soal itu sulit saya tetap mencoba", "enCorrect": ["Although", "the", "question", "is", "difficult", "I", "keep", "trying"], "jumbled": ["Although", "the", "question", "is", "difficult", "I", "keep", "trying", "is", "are", "have"], "hint": "Materi: Connector. Pola: Although + clause.", "poin": 20}, {"idText": "Saya belajar dengan giat agar dapat lulus ujian", "enCorrect": ["I", "study", "hard", "so", "that", "I", "can", "pass", "the", "test"], "jumbled": ["I", "study", "hard", "so", "that", "I", "can", "pass", "the", "test", "is", "are", "have"], "hint": "Materi: Connector. Pola: So that + clause.", "poin": 20}, {"idText": "Dia belajar bahasa Inggris untuk meningkatkan kemampuannya", "enCorrect": ["She", "studies", "English", "to", "improve", "her", "ability"], "jumbled": ["She", "studies", "English", "to", "improve", "her", "ability", "is", "are", "have"], "hint": "Materi: Infinitive Purpose. Pola: To + V1.", "poin": 20}, {"idText": "Membaca setiap hari membantu saya memahami kosakata", "enCorrect": ["Reading", "every", "day", "helps", "me", "understand", "vocabulary"], "jumbled": ["Reading", "every", "day", "helps", "me", "understand", "vocabulary", "is", "are", "have"], "hint": "Materi: Gerund Subject. Pola: Gerund + verb.", "poin": 20}, {"idText": "Saya tertarik belajar bahasa Inggris", "enCorrect": ["I", "am", "interested", "in", "learning", "English"], "jumbled": ["I", "am", "interested", "in", "learning", "English", "is", "are", "have"], "hint": "Materi: Gerund After Preposition. Pola: Preposition + V-ing.", "poin": 20}, {"idText": "Dia pandai berbicara di depan kelas", "enCorrect": ["She", "is", "good", "at", "speaking", "in", "front", "of", "the", "class"], "jumbled": ["She", "is", "good", "at", "speaking", "in", "front", "of", "the", "class", "is", "are", "have"], "hint": "Materi: Gerund After Preposition. Pola: Good at + V-ing.", "poin": 20}, {"idText": "Ada banyak buku di atas meja", "enCorrect": ["There", "are", "many", "books", "on", "the", "table"], "jumbled": ["There", "are", "many", "books", "on", "the", "table", "is", "are", "have"], "hint": "Materi: There are. Pola: There are + plural noun.", "poin": 20}, {"idText": "Ada seorang siswa di kelas", "enCorrect": ["There", "is", "a", "student", "in", "the", "classroom"], "jumbled": ["There", "is", "a", "student", "in", "the", "classroom", "is", "are", "have"], "hint": "Materi: There is. Pola: There is + singular noun.", "poin": 20}, {"idText": "Saya dulu sering bermain di taman", "enCorrect": ["I", "used", "to", "play", "in", "the", "park"], "jumbled": ["I", "used", "to", "play", "in", "the", "park", "is", "are", "have"], "hint": "Materi: Used To. Pola: Subject + used to + V1.", "poin": 20}, {"idText": "Saya terbiasa belajar pada malam hari", "enCorrect": ["I", "am", "used", "to", "studying", "at", "night"], "jumbled": ["I", "am", "used", "to", "studying", "at", "night", "is", "are", "have"], "hint": "Materi: Be Used To. Pola: Subject + be used to + V-ing.", "poin": 20}, {"idText": "Dia terlalu lelah untuk belajar", "enCorrect": ["She", "is", "too", "tired", "to", "study"], "jumbled": ["She", "is", "too", "tired", "to", "study", "is", "are", "have"], "hint": "Materi: Too To. Pola: Too + adjective + to V1.", "poin": 20}, {"idText": "Dia cukup pintar untuk menjawab pertanyaan itu", "enCorrect": ["She", "is", "smart", "enough", "to", "answer", "the", "question"], "jumbled": ["She", "is", "smart", "enough", "to", "answer", "the", "question", "is", "are", "have"], "hint": "Materi: Enough To. Pola: Adjective + enough + to V1.", "poin": 20}, {"idText": "Kalimat ini tidak sejelas kalimat itu", "enCorrect": ["This", "sentence", "is", "not", "as", "clear", "as", "that", "sentence"], "jumbled": ["This", "sentence", "is", "not", "as", "clear", "as", "that", "sentence", "is", "are", "have"], "hint": "Materi: Comparison. Pola: Not as + adjective + as.", "poin": 20}, {"idText": "Semakin banyak saya berlatih semakin baik saya berbicara", "enCorrect": ["The", "more", "I", "practice", "the", "better", "I", "speak"], "jumbled": ["The", "more", "I", "practice", "the", "better", "I", "speak", "is", "are", "have"], "hint": "Materi: Double Comparative. Pola: The more + clause.", "poin": 20}];
+  const extraTensePractice = [{"tense": "Simple Present", "idText": "Saya bermain sepak bola setiap Minggu", "enCorrect": ["I", "play", "football", "every", "Sunday"], "jumbled": ["I", "play", "football", "every", "Sunday", "is", "are", "have"], "hint": "Gunakan pola Subject + V1 + Object + Time.", "pattern": "Subject + V1 + Object + Time", "explanation": "Latihan Simple Present. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Present", "idText": "Dia belajar bahasa Inggris setiap malam", "enCorrect": ["She", "studies", "English", "every", "night"], "jumbled": ["She", "studies", "English", "every", "night", "is", "are", "have"], "hint": "Gunakan pola Subject + V-s/es + Object + Time.", "pattern": "Subject + V-s/es + Object + Time", "explanation": "Latihan Simple Present. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Present", "idText": "Mereka biasanya sarapan bersama", "enCorrect": ["They", "usually", "eat", "breakfast", "together"], "jumbled": ["They", "usually", "eat", "breakfast", "together", "is", "are", "have"], "hint": "Gunakan pola Subject + adverb + V1 + Object.", "pattern": "Subject + adverb + V1 + Object", "explanation": "Latihan Simple Present. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Present Negative", "idText": "Kami tidak menonton televisi pada pagi hari", "enCorrect": ["We", "do", "not", "watch", "television", "in", "the", "morning"], "jumbled": ["We", "do", "not", "watch", "television", "in", "the", "morning", "is", "are", "have"], "hint": "Gunakan pola Subject + do not + V1.", "pattern": "Subject + do not + V1", "explanation": "Latihan Simple Present Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Present Question", "idText": "Apakah dia pergi ke sekolah dengan bus", "enCorrect": ["Does", "she", "go", "to", "school", "by", "bus"], "jumbled": ["Does", "she", "go", "to", "school", "by", "bus", "is", "are", "have"], "hint": "Gunakan pola Does + subject + V1.", "pattern": "Does + subject + V1", "explanation": "Latihan Simple Present Question. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Continuous", "idText": "Saya sedang membaca buku sekarang", "enCorrect": ["I", "am", "reading", "a", "book", "now"], "jumbled": ["I", "am", "reading", "a", "book", "now", "is", "are", "have"], "hint": "Gunakan pola Subject + am/is/are + V-ing.", "pattern": "Subject + am/is/are + V-ing", "explanation": "Latihan Present Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Continuous", "idText": "Mereka sedang bermain di taman", "enCorrect": ["They", "are", "playing", "in", "the", "park"], "jumbled": ["They", "are", "playing", "in", "the", "park", "is", "are", "have"], "hint": "Gunakan pola Subject + are + V-ing.", "pattern": "Subject + are + V-ing", "explanation": "Latihan Present Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Continuous", "idText": "Ibu saya sedang memasak makan malam", "enCorrect": ["My", "mother", "is", "cooking", "dinner"], "jumbled": ["My", "mother", "is", "cooking", "dinner", "is", "are", "have"], "hint": "Gunakan pola Subject + is + V-ing.", "pattern": "Subject + is + V-ing", "explanation": "Latihan Present Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Continuous Negative", "idText": "Dia tidak sedang tidur", "enCorrect": ["He", "is", "not", "sleeping"], "jumbled": ["He", "is", "not", "sleeping", "is", "are", "have"], "hint": "Gunakan pola Subject + is not + V-ing.", "pattern": "Subject + is not + V-ing", "explanation": "Latihan Present Continuous Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Continuous Question", "idText": "Apakah kamu sedang mendengarkan saya", "enCorrect": ["Are", "you", "listening", "to", "me"], "jumbled": ["Are", "you", "listening", "to", "me", "is", "are", "have"], "hint": "Gunakan pola Are + subject + V-ing.", "pattern": "Are + subject + V-ing", "explanation": "Latihan Present Continuous Question. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect", "idText": "Saya telah menyelesaikan tugas saya", "enCorrect": ["I", "have", "finished", "my", "homework"], "jumbled": ["I", "have", "finished", "my", "homework", "is", "are", "have"], "hint": "Gunakan pola Subject + have/has + V3.", "pattern": "Subject + have/has + V3", "explanation": "Latihan Present Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect", "idText": "Dia sudah membeli kamus baru", "enCorrect": ["She", "has", "bought", "a", "new", "dictionary"], "jumbled": ["She", "has", "bought", "a", "new", "dictionary", "is", "are", "have"], "hint": "Gunakan pola Subject + has + V3 + Object.", "pattern": "Subject + has + V3 + Object", "explanation": "Latihan Present Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect Negative", "idText": "Kami belum melihat film itu", "enCorrect": ["We", "have", "not", "seen", "that", "movie"], "jumbled": ["We", "have", "not", "seen", "that", "movie", "is", "are", "have"], "hint": "Gunakan pola Subject + have not + V3.", "pattern": "Subject + have not + V3", "explanation": "Latihan Present Perfect Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect Question", "idText": "Apakah mereka pernah mengunjungi Bali", "enCorrect": ["Have", "they", "ever", "visited", "Bali"], "jumbled": ["Have", "they", "ever", "visited", "Bali", "is", "are", "have"], "hint": "Gunakan pola Have + subject + ever + V3.", "pattern": "Have + subject + ever + V3", "explanation": "Latihan Present Perfect Question. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect Continuous", "idText": "Dia telah belajar selama tiga jam", "enCorrect": ["She", "has", "been", "studying", "for", "three", "hours"], "jumbled": ["She", "has", "been", "studying", "for", "three", "hours", "is", "are", "have"], "hint": "Gunakan pola Subject + has been + V-ing.", "pattern": "Subject + has been + V-ing", "explanation": "Latihan Present Perfect Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Present Perfect Continuous", "idText": "Mereka telah menunggu sejak pagi", "enCorrect": ["They", "have", "been", "waiting", "since", "morning"], "jumbled": ["They", "have", "been", "waiting", "since", "morning", "is", "are", "have"], "hint": "Gunakan pola Subject + have been + V-ing.", "pattern": "Subject + have been + V-ing", "explanation": "Latihan Present Perfect Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past", "idText": "Saya pergi ke sekolah kemarin", "enCorrect": ["I", "went", "to", "school", "yesterday"], "jumbled": ["I", "went", "to", "school", "yesterday", "is", "are", "have"], "hint": "Gunakan pola Subject + V2 + Time.", "pattern": "Subject + V2 + Time", "explanation": "Latihan Simple Past. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past", "idText": "Kami mengunjungi museum minggu lalu", "enCorrect": ["We", "visited", "the", "museum", "last", "week"], "jumbled": ["We", "visited", "the", "museum", "last", "week", "is", "are", "have"], "hint": "Gunakan pola Subject + V2 + Object + Time.", "pattern": "Subject + V2 + Object + Time", "explanation": "Latihan Simple Past. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past Negative", "idText": "Dia tidak datang ke kelas kemarin", "enCorrect": ["He", "did", "not", "come", "to", "class", "yesterday"], "jumbled": ["He", "did", "not", "come", "to", "class", "yesterday", "is", "are", "have"], "hint": "Gunakan pola Subject + did not + V1.", "pattern": "Subject + did not + V1", "explanation": "Latihan Simple Past Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past Question", "idText": "Apakah kamu membaca buku itu tadi malam", "enCorrect": ["Did", "you", "read", "that", "book", "last", "night"], "jumbled": ["Did", "you", "read", "that", "book", "last", "night", "is", "are", "have"], "hint": "Gunakan pola Did + subject + V1.", "pattern": "Did + subject + V1", "explanation": "Latihan Simple Past Question. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Continuous", "idText": "Saya sedang belajar ketika dia menelepon", "enCorrect": ["I", "was", "studying", "when", "he", "called"], "jumbled": ["I", "was", "studying", "when", "he", "called", "is", "are", "have"], "hint": "Gunakan pola Subject + was/were + V-ing + when.", "pattern": "Subject + was/were + V-ing + when", "explanation": "Latihan Past Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Continuous", "idText": "Mereka sedang menonton film pada pukul delapan", "enCorrect": ["They", "were", "watching", "a", "movie", "at", "eight"], "jumbled": ["They", "were", "watching", "a", "movie", "at", "eight", "is", "are", "have"], "hint": "Gunakan pola Subject + were + V-ing.", "pattern": "Subject + were + V-ing", "explanation": "Latihan Past Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Perfect", "idText": "Dia sudah pergi sebelum saya tiba", "enCorrect": ["He", "had", "left", "before", "I", "arrived"], "jumbled": ["He", "had", "left", "before", "I", "arrived", "is", "are", "have"], "hint": "Gunakan pola Subject + had + V3.", "pattern": "Subject + had + V3", "explanation": "Latihan Past Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Perfect", "idText": "Kami telah menyelesaikan pekerjaan itu sebelum guru datang", "enCorrect": ["We", "had", "finished", "the", "work", "before", "the", "teacher", "came"], "jumbled": ["We", "had", "finished", "the", "work", "before", "the", "teacher", "came", "is", "are", "have"], "hint": "Gunakan pola Subject + had + V3.", "pattern": "Subject + had + V3", "explanation": "Latihan Past Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Perfect Continuous", "idText": "Mereka telah bekerja selama dua jam sebelum hujan mulai", "enCorrect": ["They", "had", "been", "working", "for", "two", "hours", "before", "it", "started", "raining"], "jumbled": ["They", "had", "been", "working", "for", "two", "hours", "before", "it", "started", "raining", "is", "are", "have"], "hint": "Gunakan pola Subject + had been + V-ing.", "pattern": "Subject + had been + V-ing", "explanation": "Latihan Past Perfect Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Future", "idText": "Saya akan belajar bahasa Inggris besok", "enCorrect": ["I", "will", "study", "English", "tomorrow"], "jumbled": ["I", "will", "study", "English", "tomorrow", "is", "are", "have"], "hint": "Gunakan pola Subject + will + V1.", "pattern": "Subject + will + V1", "explanation": "Latihan Simple Future. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Future", "idText": "Dia akan membeli laptop baru minggu depan", "enCorrect": ["She", "will", "buy", "a", "new", "laptop", "next", "week"], "jumbled": ["She", "will", "buy", "a", "new", "laptop", "next", "week", "is", "are", "have"], "hint": "Gunakan pola Subject + will + V1.", "pattern": "Subject + will + V1", "explanation": "Latihan Simple Future. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Future Negative", "idText": "Kami tidak akan menyerah", "enCorrect": ["We", "will", "not", "give", "up"], "jumbled": ["We", "will", "not", "give", "up", "is", "are", "have"], "hint": "Gunakan pola Subject + will not + V1.", "pattern": "Subject + will not + V1", "explanation": "Latihan Simple Future Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Future Question", "idText": "Apakah mereka akan datang malam ini", "enCorrect": ["Will", "they", "come", "tonight"], "jumbled": ["Will", "they", "come", "tonight", "is", "are", "have"], "hint": "Gunakan pola Will + subject + V1.", "pattern": "Will + subject + V1", "explanation": "Latihan Simple Future Question. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Future Continuous", "idText": "Saya akan sedang belajar pada jam delapan malam", "enCorrect": ["I", "will", "be", "studying", "at", "eight", "tonight"], "jumbled": ["I", "will", "be", "studying", "at", "eight", "tonight", "is", "are", "have"], "hint": "Gunakan pola Subject + will be + V-ing.", "pattern": "Subject + will be + V-ing", "explanation": "Latihan Future Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Future Continuous", "idText": "Mereka akan sedang bepergian besok pagi", "enCorrect": ["They", "will", "be", "traveling", "tomorrow", "morning"], "jumbled": ["They", "will", "be", "traveling", "tomorrow", "morning", "is", "are", "have"], "hint": "Gunakan pola Subject + will be + V-ing.", "pattern": "Subject + will be + V-ing", "explanation": "Latihan Future Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Future Perfect", "idText": "Saya akan sudah menyelesaikan laporan ini besok", "enCorrect": ["I", "will", "have", "finished", "this", "report", "by", "tomorrow"], "jumbled": ["I", "will", "have", "finished", "this", "report", "by", "tomorrow", "is", "are", "have"], "hint": "Gunakan pola Subject + will have + V3.", "pattern": "Subject + will have + V3", "explanation": "Latihan Future Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Future Perfect", "idText": "Dia akan sudah tiba sebelum rapat dimulai", "enCorrect": ["She", "will", "have", "arrived", "before", "the", "meeting", "starts"], "jumbled": ["She", "will", "have", "arrived", "before", "the", "meeting", "starts", "is", "are", "have"], "hint": "Gunakan pola Subject + will have + V3.", "pattern": "Subject + will have + V3", "explanation": "Latihan Future Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Future Perfect Continuous", "idText": "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun", "enCorrect": ["By", "next", "year", "I", "will", "have", "been", "studying", "English", "for", "four", "years"], "jumbled": ["By", "next", "year", "I", "will", "have", "been", "studying", "English", "for", "four", "years", "is", "are", "have"], "hint": "Gunakan pola By + time + subject + will have been + V-ing.", "pattern": "By + time + subject + will have been + V-ing", "explanation": "Latihan Future Perfect Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past Future", "idText": "Dia mengatakan bahwa dia akan belajar lebih giat", "enCorrect": ["She", "said", "that", "she", "would", "study", "harder"], "jumbled": ["She", "said", "that", "she", "would", "study", "harder", "is", "are", "have"], "hint": "Gunakan pola Subject + said + would + V1.", "pattern": "Subject + said + would + V1", "explanation": "Latihan Simple Past Future. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Simple Past Future", "idText": "Saya pikir mereka akan datang tepat waktu", "enCorrect": ["I", "thought", "they", "would", "arrive", "on", "time"], "jumbled": ["I", "thought", "they", "would", "arrive", "on", "time", "is", "are", "have"], "hint": "Gunakan pola Subject + thought + would + V1.", "pattern": "Subject + thought + would + V1", "explanation": "Latihan Simple Past Future. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Future Continuous", "idText": "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan", "enCorrect": ["He", "said", "that", "he", "would", "be", "working", "at", "eight"], "jumbled": ["He", "said", "that", "he", "would", "be", "working", "at", "eight", "is", "are", "have"], "hint": "Gunakan pola Subject + said + would be + V-ing.", "pattern": "Subject + said + would be + V-ing", "explanation": "Latihan Past Future Continuous. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Past Future Perfect", "idText": "Saya pikir dia akan sudah menyelesaikan tugas itu", "enCorrect": ["I", "thought", "she", "would", "have", "finished", "the", "task"], "jumbled": ["I", "thought", "she", "would", "have", "finished", "the", "task", "is", "are", "have"], "hint": "Gunakan pola Subject + thought + would have + V3.", "pattern": "Subject + thought + would have + V3", "explanation": "Latihan Past Future Perfect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Passive Voice", "idText": "Buku itu ditulis oleh seorang guru", "enCorrect": ["The", "book", "was", "written", "by", "a", "teacher"], "jumbled": ["The", "book", "was", "written", "by", "a", "teacher", "is", "are", "have"], "hint": "Gunakan pola Subject + be + V3 + by agent.", "pattern": "Subject + be + V3 + by agent", "explanation": "Latihan Passive Voice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Passive Voice", "idText": "Pintu itu sedang diperbaiki", "enCorrect": ["The", "door", "is", "being", "repaired"], "jumbled": ["The", "door", "is", "being", "repaired", "is", "are", "have"], "hint": "Gunakan pola Subject + is being + V3.", "pattern": "Subject + is being + V3", "explanation": "Latihan Passive Voice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Passive Voice", "idText": "Tugas itu telah dikumpulkan", "enCorrect": ["The", "assignment", "has", "been", "submitted"], "jumbled": ["The", "assignment", "has", "been", "submitted", "is", "are", "have"], "hint": "Gunakan pola Subject + has been + V3.", "pattern": "Subject + has been + V3", "explanation": "Latihan Passive Voice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Question Tag", "idText": "Dia pintar bukan", "enCorrect": ["She", "is", "smart", "is", "she", "not"], "jumbled": ["She", "is", "smart", "is", "she", "not", "is", "are", "have"], "hint": "Gunakan pola Statement + tag.", "pattern": "Statement + tag", "explanation": "Latihan Question Tag. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Question Tag", "idText": "Kamu suka bahasa Inggris bukan", "enCorrect": ["You", "like", "English", "do", "you", "not"], "jumbled": ["You", "like", "English", "do", "you", "not", "is", "are", "have"], "hint": "Gunakan pola Statement + auxiliary + subject.", "pattern": "Statement + auxiliary + subject", "explanation": "Latihan Question Tag. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Degree Comparison", "idText": "Buku ini lebih menarik daripada buku itu", "enCorrect": ["This", "book", "is", "more", "interesting", "than", "that", "book"], "jumbled": ["This", "book", "is", "more", "interesting", "than", "that", "book", "is", "are", "have"], "hint": "Gunakan pola Comparative + than.", "pattern": "Comparative + than", "explanation": "Latihan Degree Comparison. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Degree Comparison", "idText": "Dia adalah siswa paling rajin di kelas", "enCorrect": ["She", "is", "the", "most", "diligent", "student", "in", "the", "class"], "jumbled": ["She", "is", "the", "most", "diligent", "student", "in", "the", "class", "is", "are", "have"], "hint": "Gunakan pola Superlative.", "pattern": "Superlative", "explanation": "Latihan Degree Comparison. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Direct Indirect", "idText": "Dia berkata bahwa dia sedang belajar", "enCorrect": ["He", "said", "that", "he", "was", "studying"], "jumbled": ["He", "said", "that", "he", "was", "studying", "is", "are", "have"], "hint": "Gunakan pola Said that + past continuous.", "pattern": "Said that + past continuous", "explanation": "Latihan Direct Indirect. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Preferences", "idText": "Saya lebih suka teh daripada kopi", "enCorrect": ["I", "prefer", "tea", "to", "coffee"], "jumbled": ["I", "prefer", "tea", "to", "coffee", "is", "are", "have"], "hint": "Gunakan pola Prefer + noun + to + noun.", "pattern": "Prefer + noun + to + noun", "explanation": "Latihan Preferences. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Exclamatory", "idText": "Betapa indahnya hari ini", "enCorrect": ["What", "a", "beautiful", "day", "it", "is"], "jumbled": ["What", "a", "beautiful", "day", "it", "is", "is", "are", "have"], "hint": "Gunakan pola What + noun phrase.", "pattern": "What + noun phrase", "explanation": "Latihan Exclamatory. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Conditional Type 1", "idText": "Jika saya belajar saya akan lulus", "enCorrect": ["If", "I", "study", "I", "will", "pass"], "jumbled": ["If", "I", "study", "I", "will", "pass", "is", "are", "have"], "hint": "Gunakan pola If + simple present + will.", "pattern": "If + simple present + will", "explanation": "Latihan Conditional Type 1. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Conditional Type 2", "idText": "Jika saya punya waktu saya akan belajar", "enCorrect": ["If", "I", "had", "time", "I", "would", "study"], "jumbled": ["If", "I", "had", "time", "I", "would", "study", "is", "are", "have"], "hint": "Gunakan pola If + simple past + would.", "pattern": "If + simple past + would", "explanation": "Latihan Conditional Type 2. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Conditional Type 3", "idText": "Jika saya telah belajar saya akan lulus", "enCorrect": ["If", "I", "had", "studied", "I", "would", "have", "passed"], "jumbled": ["If", "I", "had", "studied", "I", "would", "have", "passed", "is", "are", "have"], "hint": "Gunakan pola If + past perfect + would have V3.", "pattern": "If + past perfect + would have V3", "explanation": "Latihan Conditional Type 3. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Each and Every", "idText": "Setiap siswa harus membawa buku", "enCorrect": ["Each", "student", "must", "bring", "a", "book"], "jumbled": ["Each", "student", "must", "bring", "a", "book", "is", "are", "have"], "hint": "Gunakan pola Each + singular noun.", "pattern": "Each + singular noun", "explanation": "Latihan Each and Every. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Each and Every", "idText": "Semua orang membutuhkan latihan", "enCorrect": ["Everyone", "needs", "practice"], "jumbled": ["Everyone", "needs", "practice", "is", "are", "have"], "hint": "Gunakan pola Everyone + singular verb.", "pattern": "Everyone + singular verb", "explanation": "Latihan Each and Every. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Relative Pronoun", "idText": "Ini adalah buku yang saya beli kemarin", "enCorrect": ["This", "is", "the", "book", "that", "I", "bought", "yesterday"], "jumbled": ["This", "is", "the", "book", "that", "I", "bought", "yesterday", "is", "are", "have"], "hint": "Gunakan pola Noun + that + clause.", "pattern": "Noun + that + clause", "explanation": "Latihan Relative Pronoun. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Relative Pronoun", "idText": "Siswa yang duduk di depan adalah teman saya", "enCorrect": ["The", "student", "who", "sits", "in", "front", "is", "my", "friend"], "jumbled": ["The", "student", "who", "sits", "in", "front", "is", "my", "friend", "is", "are", "have"], "hint": "Gunakan pola Person + who + verb.", "pattern": "Person + who + verb", "explanation": "Latihan Relative Pronoun. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Because", "idText": "Saya terlambat karena hujan", "enCorrect": ["I", "was", "late", "because", "it", "rained"], "jumbled": ["I", "was", "late", "because", "it", "rained", "is", "are", "have"], "hint": "Gunakan pola Because + clause.", "pattern": "Because + clause", "explanation": "Latihan Because. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Because Of", "idText": "Saya terlambat karena hujan deras", "enCorrect": ["I", "was", "late", "because", "of", "the", "heavy", "rain"], "jumbled": ["I", "was", "late", "because", "of", "the", "heavy", "rain", "is", "are", "have"], "hint": "Gunakan pola Because of + noun phrase.", "pattern": "Because of + noun phrase", "explanation": "Latihan Because Of. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Another Other Others", "idText": "Saya membutuhkan buku lain", "enCorrect": ["I", "need", "another", "book"], "jumbled": ["I", "need", "another", "book", "is", "are", "have"], "hint": "Gunakan pola Another + singular noun.", "pattern": "Another + singular noun", "explanation": "Latihan Another Other Others. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Another Other Others", "idText": "Beberapa siswa belajar dan yang lainnya bermain", "enCorrect": ["Some", "students", "study", "and", "others", "play"], "jumbled": ["Some", "students", "study", "and", "others", "play", "is", "are", "have"], "hint": "Gunakan pola Others as pronoun.", "pattern": "Others as pronoun", "explanation": "Latihan Another Other Others. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Vocabulary Practice", "idText": "Saya sedang mencari informasi penting", "enCorrect": ["I", "am", "looking", "for", "important", "information"], "jumbled": ["I", "am", "looking", "for", "important", "information", "is", "are", "have"], "hint": "Gunakan pola Verb phrase + noun.", "pattern": "Verb phrase + noun", "explanation": "Latihan Vocabulary Practice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Grammar Practice", "idText": "Guru menjelaskan pelajaran dengan jelas", "enCorrect": ["The", "teacher", "explains", "the", "lesson", "clearly"], "jumbled": ["The", "teacher", "explains", "the", "lesson", "clearly", "is", "are", "have"], "hint": "Gunakan pola Subject + verb + object + adverb.", "pattern": "Subject + verb + object + adverb", "explanation": "Latihan Grammar Practice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Grammar Practice", "idText": "Para siswa mendengarkan guru dengan hati-hati", "enCorrect": ["The", "students", "listen", "to", "the", "teacher", "carefully"], "jumbled": ["The", "students", "listen", "to", "the", "teacher", "carefully", "is", "are", "have"], "hint": "Gunakan pola Subject + verb + object + adverb.", "pattern": "Subject + verb + object + adverb", "explanation": "Latihan Grammar Practice. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Modal", "idText": "Dia harus menyelesaikan pekerjaan rumah sebelum makan malam", "enCorrect": ["She", "must", "finish", "her", "homework", "before", "dinner"], "jumbled": ["She", "must", "finish", "her", "homework", "before", "dinner", "is", "are", "have"], "hint": "Gunakan pola Subject + modal + V1.", "pattern": "Subject + modal + V1", "explanation": "Latihan Modal. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Modal", "idText": "Kita sebaiknya berlatih setiap hari", "enCorrect": ["We", "should", "practice", "every", "day"], "jumbled": ["We", "should", "practice", "every", "day", "is", "are", "have"], "hint": "Gunakan pola Subject + should + V1.", "pattern": "Subject + should + V1", "explanation": "Latihan Modal. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Modal", "idText": "Saya bisa memahami kalimat sederhana", "enCorrect": ["I", "can", "understand", "simple", "sentences"], "jumbled": ["I", "can", "understand", "simple", "sentences", "is", "are", "have"], "hint": "Gunakan pola Subject + can + V1.", "pattern": "Subject + can + V1", "explanation": "Latihan Modal. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Modal", "idText": "Mereka mungkin datang terlambat", "enCorrect": ["They", "may", "arrive", "late"], "jumbled": ["They", "may", "arrive", "late", "is", "are", "have"], "hint": "Gunakan pola Subject + may + V1.", "pattern": "Subject + may + V1", "explanation": "Latihan Modal. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Modal Negative", "idText": "Dia tidak boleh menggunakan kamus selama ujian", "enCorrect": ["He", "must", "not", "use", "a", "dictionary", "during", "the", "test"], "jumbled": ["He", "must", "not", "use", "a", "dictionary", "during", "the", "test", "is", "are", "have"], "hint": "Gunakan pola Subject + must not + V1.", "pattern": "Subject + must not + V1", "explanation": "Latihan Modal Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Imperative", "idText": "Tolong jelaskan arti kata ini", "enCorrect": ["Please", "explain", "the", "meaning", "of", "this", "word"], "jumbled": ["Please", "explain", "the", "meaning", "of", "this", "word", "is", "are", "have"], "hint": "Gunakan pola Please + V1.", "pattern": "Please + V1", "explanation": "Latihan Imperative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Imperative Negative", "idText": "Jangan menyerah ketika latihan sulit", "enCorrect": ["Do", "not", "give", "up", "when", "practice", "is", "difficult"], "jumbled": ["Do", "not", "give", "up", "when", "practice", "is", "difficult", "is", "are", "have"], "hint": "Gunakan pola Do not + V1.", "pattern": "Do not + V1", "explanation": "Latihan Imperative Negative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Connector", "idText": "Meskipun soal itu sulit saya tetap mencoba", "enCorrect": ["Although", "the", "question", "is", "difficult", "I", "keep", "trying"], "jumbled": ["Although", "the", "question", "is", "difficult", "I", "keep", "trying", "is", "are", "have"], "hint": "Gunakan pola Although + clause.", "pattern": "Although + clause", "explanation": "Latihan Connector. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Connector", "idText": "Saya belajar dengan giat agar dapat lulus ujian", "enCorrect": ["I", "study", "hard", "so", "that", "I", "can", "pass", "the", "test"], "jumbled": ["I", "study", "hard", "so", "that", "I", "can", "pass", "the", "test", "is", "are", "have"], "hint": "Gunakan pola So that + clause.", "pattern": "So that + clause", "explanation": "Latihan Connector. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Infinitive Purpose", "idText": "Dia belajar bahasa Inggris untuk meningkatkan kemampuannya", "enCorrect": ["She", "studies", "English", "to", "improve", "her", "ability"], "jumbled": ["She", "studies", "English", "to", "improve", "her", "ability", "is", "are", "have"], "hint": "Gunakan pola To + V1.", "pattern": "To + V1", "explanation": "Latihan Infinitive Purpose. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Gerund Subject", "idText": "Membaca setiap hari membantu saya memahami kosakata", "enCorrect": ["Reading", "every", "day", "helps", "me", "understand", "vocabulary"], "jumbled": ["Reading", "every", "day", "helps", "me", "understand", "vocabulary", "is", "are", "have"], "hint": "Gunakan pola Gerund + verb.", "pattern": "Gerund + verb", "explanation": "Latihan Gerund Subject. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Gerund After Preposition", "idText": "Saya tertarik belajar bahasa Inggris", "enCorrect": ["I", "am", "interested", "in", "learning", "English"], "jumbled": ["I", "am", "interested", "in", "learning", "English", "is", "are", "have"], "hint": "Gunakan pola Preposition + V-ing.", "pattern": "Preposition + V-ing", "explanation": "Latihan Gerund After Preposition. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Gerund After Preposition", "idText": "Dia pandai berbicara di depan kelas", "enCorrect": ["She", "is", "good", "at", "speaking", "in", "front", "of", "the", "class"], "jumbled": ["She", "is", "good", "at", "speaking", "in", "front", "of", "the", "class", "is", "are", "have"], "hint": "Gunakan pola Good at + V-ing.", "pattern": "Good at + V-ing", "explanation": "Latihan Gerund After Preposition. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "There are", "idText": "Ada banyak buku di atas meja", "enCorrect": ["There", "are", "many", "books", "on", "the", "table"], "jumbled": ["There", "are", "many", "books", "on", "the", "table", "is", "are", "have"], "hint": "Gunakan pola There are + plural noun.", "pattern": "There are + plural noun", "explanation": "Latihan There are. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "There is", "idText": "Ada seorang siswa di kelas", "enCorrect": ["There", "is", "a", "student", "in", "the", "classroom"], "jumbled": ["There", "is", "a", "student", "in", "the", "classroom", "is", "are", "have"], "hint": "Gunakan pola There is + singular noun.", "pattern": "There is + singular noun", "explanation": "Latihan There is. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Used To", "idText": "Saya dulu sering bermain di taman", "enCorrect": ["I", "used", "to", "play", "in", "the", "park"], "jumbled": ["I", "used", "to", "play", "in", "the", "park", "is", "are", "have"], "hint": "Gunakan pola Subject + used to + V1.", "pattern": "Subject + used to + V1", "explanation": "Latihan Used To. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Be Used To", "idText": "Saya terbiasa belajar pada malam hari", "enCorrect": ["I", "am", "used", "to", "studying", "at", "night"], "jumbled": ["I", "am", "used", "to", "studying", "at", "night", "is", "are", "have"], "hint": "Gunakan pola Subject + be used to + V-ing.", "pattern": "Subject + be used to + V-ing", "explanation": "Latihan Be Used To. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Too To", "idText": "Dia terlalu lelah untuk belajar", "enCorrect": ["She", "is", "too", "tired", "to", "study"], "jumbled": ["She", "is", "too", "tired", "to", "study", "is", "are", "have"], "hint": "Gunakan pola Too + adjective + to V1.", "pattern": "Too + adjective + to V1", "explanation": "Latihan Too To. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Enough To", "idText": "Dia cukup pintar untuk menjawab pertanyaan itu", "enCorrect": ["She", "is", "smart", "enough", "to", "answer", "the", "question"], "jumbled": ["She", "is", "smart", "enough", "to", "answer", "the", "question", "is", "are", "have"], "hint": "Gunakan pola Adjective + enough + to V1.", "pattern": "Adjective + enough + to V1", "explanation": "Latihan Enough To. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Comparison", "idText": "Kalimat ini tidak sejelas kalimat itu", "enCorrect": ["This", "sentence", "is", "not", "as", "clear", "as", "that", "sentence"], "jumbled": ["This", "sentence", "is", "not", "as", "clear", "as", "that", "sentence", "is", "are", "have"], "hint": "Gunakan pola Not as + adjective + as.", "pattern": "Not as + adjective + as", "explanation": "Latihan Comparison. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}, {"tense": "Double Comparative", "idText": "Semakin banyak saya berlatih semakin baik saya berbicara", "enCorrect": ["The", "more", "I", "practice", "the", "better", "I", "speak"], "jumbled": ["The", "more", "I", "practice", "the", "better", "I", "speak", "is", "are", "have"], "hint": "Gunakan pola The more + clause.", "pattern": "The more + clause", "explanation": "Latihan Double Comparative. Perhatikan subject, auxiliary, verb, object, dan keterangan.", "poin": 25}];
+  const extraListening = [{"audioText": "I play football every Sunday", "options": ["Saya bermain sepak bola setiap Minggu", "Ibu saya sedang memasak makan malam", "Kami mengunjungi museum minggu lalu", "Saya akan sedang belajar pada jam delapan malam"], "answer": 0, "poin": 20}, {"audioText": "She studies English every night", "options": ["Dia belajar bahasa Inggris setiap malam", "Dia tidak sedang tidur", "Dia tidak datang ke kelas kemarin", "Mereka akan sedang bepergian besok pagi"], "answer": 0, "poin": 15}, {"audioText": "They usually eat breakfast together", "options": ["Mereka biasanya sarapan bersama", "Apakah kamu sedang mendengarkan saya", "Apakah kamu membaca buku itu tadi malam", "Saya akan sudah menyelesaikan laporan ini besok"], "answer": 0, "poin": 15}, {"audioText": "We do not watch television in the morning", "options": ["Kami tidak menonton televisi pada pagi hari", "Saya telah menyelesaikan tugas saya", "Saya sedang belajar ketika dia menelepon", "Dia akan sudah tiba sebelum rapat dimulai"], "answer": 0, "poin": 20}, {"audioText": "Does she go to school by bus", "options": ["Apakah dia pergi ke sekolah dengan bus", "Dia sudah membeli kamus baru", "Mereka sedang menonton film pada pukul delapan", "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun"], "answer": 0, "poin": 15}, {"audioText": "I am reading a book now", "options": ["Saya sedang membaca buku sekarang", "Kami belum melihat film itu", "Dia sudah pergi sebelum saya tiba", "Dia mengatakan bahwa dia akan belajar lebih giat"], "answer": 0, "poin": 15}, {"audioText": "They are playing in the park", "options": ["Mereka sedang bermain di taman", "Apakah mereka pernah mengunjungi Bali", "Kami telah menyelesaikan pekerjaan itu sebelum guru datang", "Saya pikir mereka akan datang tepat waktu"], "answer": 0, "poin": 20}, {"audioText": "My mother is cooking dinner", "options": ["Ibu saya sedang memasak makan malam", "Dia telah belajar selama tiga jam", "Mereka telah bekerja selama dua jam sebelum hujan mulai", "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan"], "answer": 0, "poin": 15}, {"audioText": "He is not sleeping", "options": ["Dia tidak sedang tidur", "Mereka telah menunggu sejak pagi", "Saya akan belajar bahasa Inggris besok", "Saya pikir dia akan sudah menyelesaikan tugas itu"], "answer": 0, "poin": 15}, {"audioText": "Are you listening to me", "options": ["Apakah kamu sedang mendengarkan saya", "Saya pergi ke sekolah kemarin", "Dia akan membeli laptop baru minggu depan", "Buku itu ditulis oleh seorang guru"], "answer": 0, "poin": 20}, {"audioText": "I have finished my homework", "options": ["Saya telah menyelesaikan tugas saya", "Kami mengunjungi museum minggu lalu", "Kami tidak akan menyerah", "Pintu itu sedang diperbaiki"], "answer": 0, "poin": 15}, {"audioText": "She has bought a new dictionary", "options": ["Dia sudah membeli kamus baru", "Dia tidak datang ke kelas kemarin", "Apakah mereka akan datang malam ini", "Tugas itu telah dikumpulkan"], "answer": 0, "poin": 15}, {"audioText": "We have not seen that movie", "options": ["Kami belum melihat film itu", "Apakah kamu membaca buku itu tadi malam", "Saya akan sedang belajar pada jam delapan malam", "Dia pintar bukan"], "answer": 0, "poin": 20}, {"audioText": "Have they ever visited Bali", "options": ["Apakah mereka pernah mengunjungi Bali", "Saya sedang belajar ketika dia menelepon", "Mereka akan sedang bepergian besok pagi", "Kamu suka bahasa Inggris bukan"], "answer": 0, "poin": 15}, {"audioText": "She has been studying for three hours", "options": ["Dia telah belajar selama tiga jam", "Mereka sedang menonton film pada pukul delapan", "Saya akan sudah menyelesaikan laporan ini besok", "Buku ini lebih menarik daripada buku itu"], "answer": 0, "poin": 15}, {"audioText": "They have been waiting since morning", "options": ["Mereka telah menunggu sejak pagi", "Dia sudah pergi sebelum saya tiba", "Dia akan sudah tiba sebelum rapat dimulai", "Dia adalah siswa paling rajin di kelas"], "answer": 0, "poin": 20}, {"audioText": "I went to school yesterday", "options": ["Saya pergi ke sekolah kemarin", "Kami telah menyelesaikan pekerjaan itu sebelum guru datang", "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun", "Dia berkata bahwa dia sedang belajar"], "answer": 0, "poin": 15}, {"audioText": "We visited the museum last week", "options": ["Kami mengunjungi museum minggu lalu", "Mereka telah bekerja selama dua jam sebelum hujan mulai", "Dia mengatakan bahwa dia akan belajar lebih giat", "Saya lebih suka teh daripada kopi"], "answer": 0, "poin": 15}, {"audioText": "He did not come to class yesterday", "options": ["Dia tidak datang ke kelas kemarin", "Saya akan belajar bahasa Inggris besok", "Saya pikir mereka akan datang tepat waktu", "Betapa indahnya hari ini"], "answer": 0, "poin": 20}, {"audioText": "Did you read that book last night", "options": ["Apakah kamu membaca buku itu tadi malam", "Dia akan membeli laptop baru minggu depan", "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan", "Jika saya belajar saya akan lulus"], "answer": 0, "poin": 15}, {"audioText": "I was studying when he called", "options": ["Saya sedang belajar ketika dia menelepon", "Kami tidak akan menyerah", "Saya pikir dia akan sudah menyelesaikan tugas itu", "Jika saya punya waktu saya akan belajar"], "answer": 0, "poin": 15}, {"audioText": "They were watching a movie at eight", "options": ["Mereka sedang menonton film pada pukul delapan", "Apakah mereka akan datang malam ini", "Buku itu ditulis oleh seorang guru", "Jika saya telah belajar saya akan lulus"], "answer": 0, "poin": 20}, {"audioText": "He had left before I arrived", "options": ["Dia sudah pergi sebelum saya tiba", "Saya akan sedang belajar pada jam delapan malam", "Pintu itu sedang diperbaiki", "Setiap siswa harus membawa buku"], "answer": 0, "poin": 15}, {"audioText": "We had finished the work before the teacher came", "options": ["Kami telah menyelesaikan pekerjaan itu sebelum guru datang", "Mereka akan sedang bepergian besok pagi", "Tugas itu telah dikumpulkan", "Semua orang membutuhkan latihan"], "answer": 0, "poin": 15}, {"audioText": "They had been working for two hours before it started raining", "options": ["Mereka telah bekerja selama dua jam sebelum hujan mulai", "Saya akan sudah menyelesaikan laporan ini besok", "Dia pintar bukan", "Ini adalah buku yang saya beli kemarin"], "answer": 0, "poin": 20}, {"audioText": "I will study English tomorrow", "options": ["Saya akan belajar bahasa Inggris besok", "Dia akan sudah tiba sebelum rapat dimulai", "Kamu suka bahasa Inggris bukan", "Siswa yang duduk di depan adalah teman saya"], "answer": 0, "poin": 15}, {"audioText": "She will buy a new laptop next week", "options": ["Dia akan membeli laptop baru minggu depan", "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun", "Buku ini lebih menarik daripada buku itu", "Saya terlambat karena hujan"], "answer": 0, "poin": 15}, {"audioText": "We will not give up", "options": ["Kami tidak akan menyerah", "Dia mengatakan bahwa dia akan belajar lebih giat", "Dia adalah siswa paling rajin di kelas", "Saya terlambat karena hujan deras"], "answer": 0, "poin": 20}, {"audioText": "Will they come tonight", "options": ["Apakah mereka akan datang malam ini", "Saya pikir mereka akan datang tepat waktu", "Dia berkata bahwa dia sedang belajar", "Saya membutuhkan buku lain"], "answer": 0, "poin": 15}, {"audioText": "I will be studying at eight tonight", "options": ["Saya akan sedang belajar pada jam delapan malam", "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan", "Saya lebih suka teh daripada kopi", "Beberapa siswa belajar dan yang lainnya bermain"], "answer": 0, "poin": 15}, {"audioText": "They will be traveling tomorrow morning", "options": ["Mereka akan sedang bepergian besok pagi", "Saya pikir dia akan sudah menyelesaikan tugas itu", "Betapa indahnya hari ini", "Saya sedang mencari informasi penting"], "answer": 0, "poin": 20}, {"audioText": "I will have finished this report by tomorrow", "options": ["Saya akan sudah menyelesaikan laporan ini besok", "Buku itu ditulis oleh seorang guru", "Jika saya belajar saya akan lulus", "Guru menjelaskan pelajaran dengan jelas"], "answer": 0, "poin": 15}, {"audioText": "She will have arrived before the meeting starts", "options": ["Dia akan sudah tiba sebelum rapat dimulai", "Pintu itu sedang diperbaiki", "Jika saya punya waktu saya akan belajar", "Para siswa mendengarkan guru dengan hati-hati"], "answer": 0, "poin": 15}, {"audioText": "By next year I will have been studying English for four years", "options": ["Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun", "Tugas itu telah dikumpulkan", "Jika saya telah belajar saya akan lulus", "Dia harus menyelesaikan pekerjaan rumah sebelum makan malam"], "answer": 0, "poin": 20}, {"audioText": "She said that she would study harder", "options": ["Dia mengatakan bahwa dia akan belajar lebih giat", "Dia pintar bukan", "Setiap siswa harus membawa buku", "Kita sebaiknya berlatih setiap hari"], "answer": 0, "poin": 15}, {"audioText": "I thought they would arrive on time", "options": ["Saya pikir mereka akan datang tepat waktu", "Kamu suka bahasa Inggris bukan", "Semua orang membutuhkan latihan", "Saya bisa memahami kalimat sederhana"], "answer": 0, "poin": 15}, {"audioText": "He said that he would be working at eight", "options": ["Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan", "Buku ini lebih menarik daripada buku itu", "Ini adalah buku yang saya beli kemarin", "Mereka mungkin datang terlambat"], "answer": 0, "poin": 20}, {"audioText": "I thought she would have finished the task", "options": ["Saya pikir dia akan sudah menyelesaikan tugas itu", "Dia adalah siswa paling rajin di kelas", "Siswa yang duduk di depan adalah teman saya", "Dia tidak boleh menggunakan kamus selama ujian"], "answer": 0, "poin": 15}, {"audioText": "The book was written by a teacher", "options": ["Buku itu ditulis oleh seorang guru", "Dia berkata bahwa dia sedang belajar", "Saya terlambat karena hujan", "Tolong jelaskan arti kata ini"], "answer": 0, "poin": 15}, {"audioText": "The door is being repaired", "options": ["Pintu itu sedang diperbaiki", "Saya lebih suka teh daripada kopi", "Saya terlambat karena hujan deras", "Jangan menyerah ketika latihan sulit"], "answer": 0, "poin": 20}, {"audioText": "The assignment has been submitted", "options": ["Tugas itu telah dikumpulkan", "Betapa indahnya hari ini", "Saya membutuhkan buku lain", "Meskipun soal itu sulit saya tetap mencoba"], "answer": 0, "poin": 15}, {"audioText": "She is smart is she not", "options": ["Dia pintar bukan", "Jika saya belajar saya akan lulus", "Beberapa siswa belajar dan yang lainnya bermain", "Saya belajar dengan giat agar dapat lulus ujian"], "answer": 0, "poin": 15}, {"audioText": "You like English do you not", "options": ["Kamu suka bahasa Inggris bukan", "Jika saya punya waktu saya akan belajar", "Saya sedang mencari informasi penting", "Dia belajar bahasa Inggris untuk meningkatkan kemampuannya"], "answer": 0, "poin": 20}, {"audioText": "This book is more interesting than that book", "options": ["Buku ini lebih menarik daripada buku itu", "Jika saya telah belajar saya akan lulus", "Guru menjelaskan pelajaran dengan jelas", "Membaca setiap hari membantu saya memahami kosakata"], "answer": 0, "poin": 15}, {"audioText": "She is the most diligent student in the class", "options": ["Dia adalah siswa paling rajin di kelas", "Setiap siswa harus membawa buku", "Para siswa mendengarkan guru dengan hati-hati", "Saya tertarik belajar bahasa Inggris"], "answer": 0, "poin": 15}, {"audioText": "He said that he was studying", "options": ["Dia berkata bahwa dia sedang belajar", "Semua orang membutuhkan latihan", "Dia harus menyelesaikan pekerjaan rumah sebelum makan malam", "Dia pandai berbicara di depan kelas"], "answer": 0, "poin": 20}, {"audioText": "I prefer tea to coffee", "options": ["Saya lebih suka teh daripada kopi", "Ini adalah buku yang saya beli kemarin", "Kita sebaiknya berlatih setiap hari", "Ada banyak buku di atas meja"], "answer": 0, "poin": 15}, {"audioText": "What a beautiful day it is", "options": ["Betapa indahnya hari ini", "Siswa yang duduk di depan adalah teman saya", "Saya bisa memahami kalimat sederhana", "Ada seorang siswa di kelas"], "answer": 0, "poin": 15}, {"audioText": "If I study I will pass", "options": ["Jika saya belajar saya akan lulus", "Saya terlambat karena hujan", "Mereka mungkin datang terlambat", "Saya dulu sering bermain di taman"], "answer": 0, "poin": 20}, {"audioText": "If I had time I would study", "options": ["Jika saya punya waktu saya akan belajar", "Saya terlambat karena hujan deras", "Dia tidak boleh menggunakan kamus selama ujian", "Saya terbiasa belajar pada malam hari"], "answer": 0, "poin": 15}, {"audioText": "If I had studied I would have passed", "options": ["Jika saya telah belajar saya akan lulus", "Saya membutuhkan buku lain", "Tolong jelaskan arti kata ini", "Dia terlalu lelah untuk belajar"], "answer": 0, "poin": 15}, {"audioText": "Each student must bring a book", "options": ["Setiap siswa harus membawa buku", "Beberapa siswa belajar dan yang lainnya bermain", "Jangan menyerah ketika latihan sulit", "Dia cukup pintar untuk menjawab pertanyaan itu"], "answer": 0, "poin": 20}, {"audioText": "Everyone needs practice", "options": ["Semua orang membutuhkan latihan", "Saya sedang mencari informasi penting", "Meskipun soal itu sulit saya tetap mencoba", "Kalimat ini tidak sejelas kalimat itu"], "answer": 0, "poin": 15}, {"audioText": "This is the book that I bought yesterday", "options": ["Ini adalah buku yang saya beli kemarin", "Guru menjelaskan pelajaran dengan jelas", "Saya belajar dengan giat agar dapat lulus ujian", "Semakin banyak saya berlatih semakin baik saya berbicara"], "answer": 0, "poin": 15}, {"audioText": "The student who sits in front is my friend", "options": ["Siswa yang duduk di depan adalah teman saya", "Para siswa mendengarkan guru dengan hati-hati", "Dia belajar bahasa Inggris untuk meningkatkan kemampuannya", "Saya bermain sepak bola setiap Minggu"], "answer": 0, "poin": 20}, {"audioText": "I was late because it rained", "options": ["Saya terlambat karena hujan", "Dia harus menyelesaikan pekerjaan rumah sebelum makan malam", "Membaca setiap hari membantu saya memahami kosakata", "Dia belajar bahasa Inggris setiap malam"], "answer": 0, "poin": 15}, {"audioText": "I was late because of the heavy rain", "options": ["Saya terlambat karena hujan deras", "Kita sebaiknya berlatih setiap hari", "Saya tertarik belajar bahasa Inggris", "Mereka biasanya sarapan bersama"], "answer": 0, "poin": 15}, {"audioText": "I need another book", "options": ["Saya membutuhkan buku lain", "Saya bisa memahami kalimat sederhana", "Dia pandai berbicara di depan kelas", "Kami tidak menonton televisi pada pagi hari"], "answer": 0, "poin": 20}, {"audioText": "Some students study and others play", "options": ["Beberapa siswa belajar dan yang lainnya bermain", "Mereka mungkin datang terlambat", "Ada banyak buku di atas meja", "Apakah dia pergi ke sekolah dengan bus"], "answer": 0, "poin": 15}, {"audioText": "I am looking for important information", "options": ["Saya sedang mencari informasi penting", "Dia tidak boleh menggunakan kamus selama ujian", "Ada seorang siswa di kelas", "Saya sedang membaca buku sekarang"], "answer": 0, "poin": 15}, {"audioText": "The teacher explains the lesson clearly", "options": ["Guru menjelaskan pelajaran dengan jelas", "Tolong jelaskan arti kata ini", "Saya dulu sering bermain di taman", "Mereka sedang bermain di taman"], "answer": 0, "poin": 20}, {"audioText": "The students listen to the teacher carefully", "options": ["Para siswa mendengarkan guru dengan hati-hati", "Jangan menyerah ketika latihan sulit", "Saya terbiasa belajar pada malam hari", "Ibu saya sedang memasak makan malam"], "answer": 0, "poin": 15}, {"audioText": "She must finish her homework before dinner", "options": ["Dia harus menyelesaikan pekerjaan rumah sebelum makan malam", "Meskipun soal itu sulit saya tetap mencoba", "Dia terlalu lelah untuk belajar", "Dia tidak sedang tidur"], "answer": 0, "poin": 15}, {"audioText": "We should practice every day", "options": ["Kita sebaiknya berlatih setiap hari", "Saya belajar dengan giat agar dapat lulus ujian", "Dia cukup pintar untuk menjawab pertanyaan itu", "Apakah kamu sedang mendengarkan saya"], "answer": 0, "poin": 20}, {"audioText": "I can understand simple sentences", "options": ["Saya bisa memahami kalimat sederhana", "Dia belajar bahasa Inggris untuk meningkatkan kemampuannya", "Kalimat ini tidak sejelas kalimat itu", "Saya telah menyelesaikan tugas saya"], "answer": 0, "poin": 15}, {"audioText": "They may arrive late", "options": ["Mereka mungkin datang terlambat", "Membaca setiap hari membantu saya memahami kosakata", "Semakin banyak saya berlatih semakin baik saya berbicara", "Dia sudah membeli kamus baru"], "answer": 0, "poin": 15}, {"audioText": "He must not use a dictionary during the test", "options": ["Dia tidak boleh menggunakan kamus selama ujian", "Saya tertarik belajar bahasa Inggris", "Saya bermain sepak bola setiap Minggu", "Kami belum melihat film itu"], "answer": 0, "poin": 20}, {"audioText": "Please explain the meaning of this word", "options": ["Tolong jelaskan arti kata ini", "Dia pandai berbicara di depan kelas", "Dia belajar bahasa Inggris setiap malam", "Apakah mereka pernah mengunjungi Bali"], "answer": 0, "poin": 15}, {"audioText": "Do not give up when practice is difficult", "options": ["Jangan menyerah ketika latihan sulit", "Ada banyak buku di atas meja", "Mereka biasanya sarapan bersama", "Dia telah belajar selama tiga jam"], "answer": 0, "poin": 15}, {"audioText": "Although the question is difficult I keep trying", "options": ["Meskipun soal itu sulit saya tetap mencoba", "Ada seorang siswa di kelas", "Kami tidak menonton televisi pada pagi hari", "Mereka telah menunggu sejak pagi"], "answer": 0, "poin": 20}, {"audioText": "I study hard so that I can pass the test", "options": ["Saya belajar dengan giat agar dapat lulus ujian", "Saya dulu sering bermain di taman", "Apakah dia pergi ke sekolah dengan bus", "Saya pergi ke sekolah kemarin"], "answer": 0, "poin": 15}, {"audioText": "She studies English to improve her ability", "options": ["Dia belajar bahasa Inggris untuk meningkatkan kemampuannya", "Saya terbiasa belajar pada malam hari", "Saya sedang membaca buku sekarang", "Kami mengunjungi museum minggu lalu"], "answer": 0, "poin": 15}, {"audioText": "Reading every day helps me understand vocabulary", "options": ["Membaca setiap hari membantu saya memahami kosakata", "Dia terlalu lelah untuk belajar", "Mereka sedang bermain di taman", "Dia tidak datang ke kelas kemarin"], "answer": 0, "poin": 20}, {"audioText": "I am interested in learning English", "options": ["Saya tertarik belajar bahasa Inggris", "Dia cukup pintar untuk menjawab pertanyaan itu", "Ibu saya sedang memasak makan malam", "Apakah kamu membaca buku itu tadi malam"], "answer": 0, "poin": 15}, {"audioText": "She is good at speaking in front of the class", "options": ["Dia pandai berbicara di depan kelas", "Kalimat ini tidak sejelas kalimat itu", "Dia tidak sedang tidur", "Saya sedang belajar ketika dia menelepon"], "answer": 0, "poin": 15}, {"audioText": "There are many books on the table", "options": ["Ada banyak buku di atas meja", "Semakin banyak saya berlatih semakin baik saya berbicara", "Apakah kamu sedang mendengarkan saya", "Mereka sedang menonton film pada pukul delapan"], "answer": 0, "poin": 20}, {"audioText": "There is a student in the classroom", "options": ["Ada seorang siswa di kelas", "Saya bermain sepak bola setiap Minggu", "Saya telah menyelesaikan tugas saya", "Dia sudah pergi sebelum saya tiba"], "answer": 0, "poin": 15}, {"audioText": "I used to play in the park", "options": ["Saya dulu sering bermain di taman", "Dia belajar bahasa Inggris setiap malam", "Dia sudah membeli kamus baru", "Kami telah menyelesaikan pekerjaan itu sebelum guru datang"], "answer": 0, "poin": 15}, {"audioText": "I am used to studying at night", "options": ["Saya terbiasa belajar pada malam hari", "Mereka biasanya sarapan bersama", "Kami belum melihat film itu", "Mereka telah bekerja selama dua jam sebelum hujan mulai"], "answer": 0, "poin": 20}, {"audioText": "She is too tired to study", "options": ["Dia terlalu lelah untuk belajar", "Kami tidak menonton televisi pada pagi hari", "Apakah mereka pernah mengunjungi Bali", "Saya akan belajar bahasa Inggris besok"], "answer": 0, "poin": 15}, {"audioText": "She is smart enough to answer the question", "options": ["Dia cukup pintar untuk menjawab pertanyaan itu", "Apakah dia pergi ke sekolah dengan bus", "Dia telah belajar selama tiga jam", "Dia akan membeli laptop baru minggu depan"], "answer": 0, "poin": 15}, {"audioText": "This sentence is not as clear as that sentence", "options": ["Kalimat ini tidak sejelas kalimat itu", "Saya sedang membaca buku sekarang", "Mereka telah menunggu sejak pagi", "Kami tidak akan menyerah"], "answer": 0, "poin": 20}, {"audioText": "The more I practice the better I speak", "options": ["Semakin banyak saya berlatih semakin baik saya berbicara", "Mereka sedang bermain di taman", "Saya pergi ke sekolah kemarin", "Apakah mereka akan datang malam ini"], "answer": 0, "poin": 15}];
+  const extraFoundationModules = [{"title": "Passive Voice Lengkap", "goal": "Memahami cara mengubah aktif menjadi pasif untuk TOEFL.", "structure": "Object aktif + be + Verb 3 + by + subject aktif", "explanation": "Passive voice digunakan saat fokus kalimat berada pada objek atau hasil tindakan. Dalam TOEFL, bentuk be harus mengikuti tense, sedangkan verb utama harus Verb 3.", "keyPoints": ["Simple Present Passive: is/am/are + V3", "Simple Past Passive: was/were + V3", "Perfect Passive: have/has/had + been + V3", "Continuous Passive: be + being + V3"], "examples": [{"en": "The book was written by a teacher.", "id": "Buku itu ditulis oleh seorang guru."}, {"en": "The door is being repaired.", "id": "Pintu itu sedang diperbaiki."}, {"en": "The assignment has been submitted.", "id": "Tugas itu telah dikumpulkan."}], "mistakes": [{"wrong": "The book wrote by a teacher.", "correct": "The book was written by a teacher.", "note": "Passive membutuhkan be + Verb 3."}]}, {"title": "Question Tag Lengkap", "goal": "Memahami pola tag question agar tidak salah auxiliary dan subject.", "structure": "Positive statement + negative tag / Negative statement + positive tag", "explanation": "Question tag meminta konfirmasi. Jika kalimat utama positif, tag negatif. Jika kalimat utama negatif, tag positif.", "keyPoints": ["She is smart, isn't she?", "You like English, don't you?", "They did not come, did they?", "I am right, aren't I?"], "examples": [{"en": "She is smart, isn't she?", "id": "Dia pintar, bukan?"}, {"en": "They did not come, did they?", "id": "Mereka tidak datang, kan?"}], "mistakes": [{"wrong": "She is smart, is she?", "correct": "She is smart, isn't she?", "note": "Kalimat utama positif memakai tag negatif."}]}, {"title": "Conditional Sentences Lengkap", "goal": "Memahami pengandaian tipe 0, 1, 2, dan 3.", "structure": "If clause + main clause", "explanation": "Conditional sentence dipakai untuk sebab-akibat, kemungkinan, pengandaian, dan penyesalan. TOEFL sering menguji kecocokan tense antar klausa.", "keyPoints": ["Type 0: If + present, present", "Type 1: If + present, will + V1", "Type 2: If + past, would + V1", "Type 3: If + had V3, would have V3"], "examples": [{"en": "If I study, I will pass.", "id": "Jika saya belajar, saya akan lulus."}, {"en": "If I had studied, I would have passed.", "id": "Jika saya telah belajar, saya akan lulus."}], "mistakes": [{"wrong": "If I will study, I will pass.", "correct": "If I study, I will pass.", "note": "Pada conditional type 1, if clause memakai simple present."}]}, {"title": "Relative Pronoun Lengkap", "goal": "Memahami who, whom, whose, which, dan that.", "structure": "Noun + relative pronoun + clause", "explanation": "Relative pronoun menjelaskan noun sebelumnya. Who untuk orang sebagai subjek, whom untuk orang sebagai objek, which untuk benda, whose untuk kepemilikan, dan that untuk orang/benda.", "keyPoints": ["who = orang sebagai subject", "whom = orang sebagai object", "which = benda/hewan", "whose = kepemilikan", "that = orang/benda"], "examples": [{"en": "The student who sits in front is my friend.", "id": "Siswa yang duduk di depan adalah teman saya."}, {"en": "This is the book that I bought yesterday.", "id": "Ini adalah buku yang saya beli kemarin."}], "mistakes": [{"wrong": "The student which sits in front...", "correct": "The student who sits in front...", "note": "Untuk orang gunakan who/that, bukan which."}]}];
+  const extraTenseExamples = {"Simple Present Tense": [{"en": "I play football every Sunday.", "id": "Saya bermain sepak bola setiap Minggu."}, {"en": "She studies English every night.", "id": "Dia belajar bahasa Inggris setiap malam."}, {"en": "They usually eat breakfast together.", "id": "Mereka biasanya sarapan bersama."}, {"en": "We do not watch television in the morning.", "id": "Kami tidak menonton televisi pada pagi hari."}, {"en": "Does she go to school by bus.", "id": "Apakah dia pergi ke sekolah dengan bus."}], "Present Continuous Tense": [{"en": "I am reading a book now.", "id": "Saya sedang membaca buku sekarang."}, {"en": "They are playing in the park.", "id": "Mereka sedang bermain di taman."}, {"en": "My mother is cooking dinner.", "id": "Ibu saya sedang memasak makan malam."}, {"en": "He is not sleeping.", "id": "Dia tidak sedang tidur."}, {"en": "Are you listening to me.", "id": "Apakah kamu sedang mendengarkan saya."}], "Present Perfect Tense": [{"en": "I have finished my homework.", "id": "Saya telah menyelesaikan tugas saya."}, {"en": "She has bought a new dictionary.", "id": "Dia sudah membeli kamus baru."}, {"en": "We have not seen that movie.", "id": "Kami belum melihat film itu."}, {"en": "Have they ever visited Bali.", "id": "Apakah mereka pernah mengunjungi Bali."}], "Present Perfect Continuous Tense": [{"en": "She has been studying for three hours.", "id": "Dia telah belajar selama tiga jam."}, {"en": "They have been waiting since morning.", "id": "Mereka telah menunggu sejak pagi."}], "Simple Past Tense": [{"en": "I went to school yesterday.", "id": "Saya pergi ke sekolah kemarin."}, {"en": "We visited the museum last week.", "id": "Kami mengunjungi museum minggu lalu."}, {"en": "He did not come to class yesterday.", "id": "Dia tidak datang ke kelas kemarin."}, {"en": "Did you read that book last night.", "id": "Apakah kamu membaca buku itu tadi malam."}], "Past Continuous Tense": [{"en": "I was studying when he called.", "id": "Saya sedang belajar ketika dia menelepon."}, {"en": "They were watching a movie at eight.", "id": "Mereka sedang menonton film pada pukul delapan."}], "Past Perfect Tense": [{"en": "He had left before I arrived.", "id": "Dia sudah pergi sebelum saya tiba."}, {"en": "We had finished the work before the teacher came.", "id": "Kami telah menyelesaikan pekerjaan itu sebelum guru datang."}], "Past Perfect Continuous Tense": [{"en": "They had been working for two hours before it started raining.", "id": "Mereka telah bekerja selama dua jam sebelum hujan mulai."}], "Simple Future Tense": [{"en": "I will study English tomorrow.", "id": "Saya akan belajar bahasa Inggris besok."}, {"en": "She will buy a new laptop next week.", "id": "Dia akan membeli laptop baru minggu depan."}, {"en": "We will not give up.", "id": "Kami tidak akan menyerah."}, {"en": "Will they come tonight.", "id": "Apakah mereka akan datang malam ini."}], "Future Continuous Tense": [{"en": "I will be studying at eight tonight.", "id": "Saya akan sedang belajar pada jam delapan malam."}, {"en": "They will be traveling tomorrow morning.", "id": "Mereka akan sedang bepergian besok pagi."}], "Future Perfect Tense": [{"en": "I will have finished this report by tomorrow.", "id": "Saya akan sudah menyelesaikan laporan ini besok."}, {"en": "She will have arrived before the meeting starts.", "id": "Dia akan sudah tiba sebelum rapat dimulai."}], "Future Perfect Continuous Tense": [{"en": "By next year I will have been studying English for four years.", "id": "Tahun depan saya akan sudah belajar bahasa Inggris selama empat tahun."}], "Simple Past Future Tense": [{"en": "She said that she would study harder.", "id": "Dia mengatakan bahwa dia akan belajar lebih giat."}, {"en": "I thought they would arrive on time.", "id": "Saya pikir mereka akan datang tepat waktu."}], "Past Future Continuous Tense": [{"en": "He said that he would be working at eight.", "id": "Dia mengatakan bahwa dia akan sedang bekerja pada pukul delapan."}], "Past Future Perfect Tense": [{"en": "I thought she would have finished the task.", "id": "Saya pikir dia akan sudah menyelesaikan tugas itu."}]};
+
+  addUnique("dictionary", extraDictionary, (item) => String(item.en || "").toLowerCase());
+  addUnique("vocabularies", extraVocabularies, (item) => String(item.en || "").toLowerCase());
+  addUnique("foundationVocabulary", extraFoundationVocabulary, (item) => String(item.en || "").toLowerCase());
+  addUnique("grammar", extraGrammar, (item) => String(item.enCorrect || item.idText || "").toLowerCase());
+  addUnique("tensePractice", extraTensePractice, (item) => String(item.enCorrect || item.idText || "").toLowerCase());
+  addUnique("listening", extraListening, (item) => String(item.audioText || "").toLowerCase());
+  addUnique("foundationModules", extraFoundationModules, (item) => String(item.title || "").toLowerCase());
+
+  (appDatabase.tenseLessons || []).forEach((lesson) => {
+    const extras = extraTenseExamples[lesson.name] || [];
+    if (!Array.isArray(lesson.examples)) lesson.examples = [];
+    const seen = new Set(lesson.examples.map((ex) => String(ex.en || "").toLowerCase()));
+    extras.forEach((ex) => { const key = String(ex.en || "").toLowerCase(); if (!seen.has(key)) { seen.add(key); lesson.examples.push(ex); } });
+  });
+
+  const dictSeen = new Set((appDatabase.dictionary || []).map((item) => String(item.en || "").toLowerCase()));
+  [...(appDatabase.vocabularies || []), ...(appDatabase.foundationVocabulary || [])].forEach((item) => {
+    const key = String(item.en || "").toLowerCase();
+    if (key && !dictSeen.has(key) && item.id) {
+      dictSeen.add(key);
+      appDatabase.dictionary.push({ en: item.en, id: item.id, category: item.category || "Kosakata", wordClass: item.wordClass || "word", example: item.example || "" });
+    }
+  });
+})();
+
+
+// ================= TOEFL SIMULATION FEATURE DATA =================
+(function addToeflSimulationData(){
+  if (typeof appDatabase === 'undefined') return;
+  const questions = [
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "She usually ___ breakfast at 7 a.m.",
+    "options": [
+      "eat",
+      "eats",
+      "eating",
+      "eaten"
+    ],
+    "answer": 1,
+    "explanation": "Subject 'she' dalam Simple Present memakai verb s/es: eats."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "They ___ studying English when I called them last night.",
+    "options": [
+      "is",
+      "are",
+      "was",
+      "were"
+    ],
+    "answer": 3,
+    "explanation": "Subject 'they' memakai were dalam Past Continuous."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "If I had more time, I ___ the TOEFL test again.",
+    "options": [
+      "take",
+      "took",
+      "would take",
+      "will take"
+    ],
+    "answer": 2,
+    "explanation": "Conditional type 2 memakai If + past, would + V1."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The students ___ completed the assignment before the teacher arrived.",
+    "options": [
+      "has",
+      "have",
+      "had",
+      "having"
+    ],
+    "answer": 2,
+    "explanation": "Past Perfect memakai had + Verb 3."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "By next week, she ___ finished the report.",
+    "options": [
+      "will have",
+      "has",
+      "had",
+      "is"
+    ],
+    "answer": 0,
+    "explanation": "Future Perfect memakai will have + Verb 3."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The book ___ by many students every semester.",
+    "options": [
+      "reads",
+      "is read",
+      "read",
+      "reading"
+    ],
+    "answer": 1,
+    "explanation": "Passive Simple Present memakai is/am/are + V3."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "Neither the teacher nor the students ___ ready for the test.",
+    "options": [
+      "is",
+      "are",
+      "was",
+      "be"
+    ],
+    "answer": 1,
+    "explanation": "Dalam neither...nor, verb mengikuti subject terdekat: students are."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The number of applicants ___ increasing every year.",
+    "options": [
+      "are",
+      "were",
+      "is",
+      "be"
+    ],
+    "answer": 2,
+    "explanation": "'The number of' dianggap singular, jadi is."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "A number of students ___ absent yesterday.",
+    "options": [
+      "was",
+      "is",
+      "were",
+      "has"
+    ],
+    "answer": 2,
+    "explanation": "'A number of' bermakna many, jadi plural: were."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "He suggested that she ___ more carefully.",
+    "options": [
+      "studies",
+      "study",
+      "studied",
+      "studying"
+    ],
+    "answer": 1,
+    "explanation": "Subjunctive setelah suggest memakai base verb: study."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "It is important that every student ___ on time.",
+    "options": [
+      "arrives",
+      "arrive",
+      "arrived",
+      "arriving"
+    ],
+    "answer": 1,
+    "explanation": "Subjunctive setelah important that memakai base verb."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The woman ___ lives next door is a doctor.",
+    "options": [
+      "which",
+      "whom",
+      "who",
+      "whose"
+    ],
+    "answer": 2,
+    "explanation": "Relative pronoun untuk orang sebagai subject adalah who."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The man to ___ I spoke was very helpful.",
+    "options": [
+      "who",
+      "whom",
+      "whose",
+      "which"
+    ],
+    "answer": 1,
+    "explanation": "Setelah preposition 'to', gunakan whom untuk orang sebagai object."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "This is the most interesting book I have ___ read.",
+    "options": [
+      "ever",
+      "never",
+      "yet",
+      "still"
+    ],
+    "answer": 0,
+    "explanation": "Present perfect sering memakai ever untuk pengalaman."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "She has been learning English ___ three years.",
+    "options": [
+      "since",
+      "for",
+      "during",
+      "while"
+    ],
+    "answer": 1,
+    "explanation": "For dipakai untuk durasi waktu."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "She has lived here ___ 2020.",
+    "options": [
+      "for",
+      "since",
+      "during",
+      "while"
+    ],
+    "answer": 1,
+    "explanation": "Since dipakai untuk titik awal waktu."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The teacher asked us ___ silent during the exam.",
+    "options": [
+      "be",
+      "to be",
+      "being",
+      "been"
+    ],
+    "answer": 1,
+    "explanation": "Ask + object + to infinitive."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "I am interested in ___ English every day.",
+    "options": [
+      "learn",
+      "to learn",
+      "learning",
+      "learned"
+    ],
+    "answer": 2,
+    "explanation": "Setelah preposition 'in', gunakan gerund V-ing."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The test was ___ difficult that many students failed.",
+    "options": [
+      "so",
+      "such",
+      "too",
+      "enough"
+    ],
+    "answer": 0,
+    "explanation": "So + adjective + that clause."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "It was ___ a difficult test that many students failed.",
+    "options": [
+      "so",
+      "such",
+      "too",
+      "enough"
+    ],
+    "answer": 1,
+    "explanation": "Such + noun phrase + that clause."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The more you practice, ___ you will become.",
+    "options": [
+      "the good",
+      "the best",
+      "the better",
+      "better"
+    ],
+    "answer": 2,
+    "explanation": "Double comparative: The more..., the better..."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "This sentence is not as clear ___ the previous one.",
+    "options": [
+      "than",
+      "as",
+      "to",
+      "from"
+    ],
+    "answer": 1,
+    "explanation": "Perbandingan setara memakai as...as."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "She would rather study grammar ___ watch television.",
+    "options": [
+      "than",
+      "to",
+      "from",
+      "as"
+    ],
+    "answer": 0,
+    "explanation": "Would rather + V1 + than + V1."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "I prefer reading books ___ watching movies.",
+    "options": [
+      "than",
+      "to",
+      "from",
+      "rather"
+    ],
+    "answer": 1,
+    "explanation": "Prefer + V-ing/noun + to + V-ing/noun."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The door needs ___ before the class starts.",
+    "options": [
+      "repair",
+      "to repair",
+      "repairing",
+      "repaired"
+    ],
+    "answer": 2,
+    "explanation": "Need + V-ing dapat bermakna perlu diperbaiki secara pasif."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The teacher made the students ___ the answer.",
+    "options": [
+      "repeat",
+      "to repeat",
+      "repeated",
+      "repeating"
+    ],
+    "answer": 0,
+    "explanation": "Make + object + base verb."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "She let me ___ her dictionary.",
+    "options": [
+      "use",
+      "to use",
+      "using",
+      "used"
+    ],
+    "answer": 0,
+    "explanation": "Let + object + base verb."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "Despite ___ tired, he continued studying.",
+    "options": [
+      "he was",
+      "being",
+      "to be",
+      "was"
+    ],
+    "answer": 1,
+    "explanation": "Despite diikuti noun/gerund: despite being tired."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "Although he ___ tired, he continued studying.",
+    "options": [
+      "is",
+      "being",
+      "to be",
+      "be"
+    ],
+    "answer": 0,
+    "explanation": "Although diikuti clause: subject + verb."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Basic",
+    "question": "The assignment must ___ by Friday.",
+    "options": [
+      "submit",
+      "submitted",
+      "be submitted",
+      "be submitting"
+    ],
+    "answer": 2,
+    "explanation": "Modal passive: must be + V3."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The students (A) has (B) finished (C) their assignments (D) on time.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 0,
+    "explanation": "Subject 'students' plural, jadi harus 'have', bukan 'has'."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "She (A) is (B) study (C) English (D) now.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Present Continuous membutuhkan Verb-ing: studying."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "He (A) did not (B) went (C) to school (D) yesterday.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Setelah did not, verb kembali ke V1: go."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The book (A) which (B) I bought it (C) yesterday is (D) expensive.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 2,
+    "explanation": "Tidak perlu object 'it' karena sudah ada relative pronoun sebagai object."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "Neither (A) the students nor the teacher (B) are (C) ready (D) today.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Verb mengikuti subject terdekat 'teacher', jadi is."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The number (A) of people (B) are (C) increasing (D) every year.",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "'The number' singular, jadi is."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "She is (A) more smarter (B) than (C) her brother (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Jangan gunakan more + adjective-er. Cukup smarter."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "I look forward (A) to meet (B) you (C) next week (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Look forward to diikuti gerund: meeting."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "Because of (A) it rained (B), the match (C) was cancelled (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 0,
+    "explanation": "Because of harus diikuti noun phrase. Untuk clause gunakan because."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The report (A) was wrote (B) by (C) the secretary (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Passive membutuhkan V3: written."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "Every students (A) must (B) bring (C) a pencil (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 0,
+    "explanation": "Every diikuti singular noun: every student."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "She has (A) been lived (B) here (C) since 2020 (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Present Perfect Continuous: has been living."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The teacher asked (A) that the student (B) studies (C) harder (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 2,
+    "explanation": "Subjunctive: asked that + subject + base verb: study."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "If I was (A) you, I would (B) choose (C) the second answer (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 0,
+    "explanation": "Conditional type 2 formal memakai 'were' untuk semua subject."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "He (A) suggested (B) me to study (C) harder (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 2,
+    "explanation": "Suggest tidak memakai object + to infinitive. Gunakan suggested that I study."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "This is (A) the man (B) which (C) helped me (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 2,
+    "explanation": "Untuk orang gunakan who/that, bukan which."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "She (A) has already (B) ate (C) breakfast (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 2,
+    "explanation": "Present Perfect memakai V3: eaten."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "The information (A) are (B) useful (C) for students (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Information uncountable singular, jadi is."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "There (A) is (B) many reasons (C) for the problem (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Many reasons plural, jadi there are."
+  },
+  {
+    "section": "Written Expression",
+    "type": "Error Identification",
+    "level": "Intermediate",
+    "question": "He is (A) enough tall (B) to reach (C) the shelf (D).",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": 1,
+    "explanation": "Adjective + enough: tall enough."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'rapid' is closest in meaning to ___.",
+    "options": [
+      "slow",
+      "quick",
+      "late",
+      "weak"
+    ],
+    "answer": 1,
+    "explanation": "Rapid berarti cepat/quick."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'assist' is closest in meaning to ___.",
+    "options": [
+      "help",
+      "avoid",
+      "reject",
+      "forget"
+    ],
+    "answer": 0,
+    "explanation": "Assist berarti membantu/help."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'purchase' is closest in meaning to ___.",
+    "options": [
+      "sell",
+      "buy",
+      "borrow",
+      "lend"
+    ],
+    "answer": 1,
+    "explanation": "Purchase berarti membeli/buy."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'annual' is closest in meaning to ___.",
+    "options": [
+      "daily",
+      "weekly",
+      "yearly",
+      "monthly"
+    ],
+    "answer": 2,
+    "explanation": "Annual berarti tahunan/yearly."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'significant' is closest in meaning to ___.",
+    "options": [
+      "important",
+      "small",
+      "unclear",
+      "ordinary"
+    ],
+    "answer": 0,
+    "explanation": "Significant berarti penting/bermakna."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'brief' is closest in meaning to ___.",
+    "options": [
+      "short",
+      "long",
+      "clear",
+      "expensive"
+    ],
+    "answer": 0,
+    "explanation": "Brief berarti singkat/short."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'require' is closest in meaning to ___.",
+    "options": [
+      "need",
+      "refuse",
+      "repair",
+      "repeat"
+    ],
+    "answer": 0,
+    "explanation": "Require berarti membutuhkan/need."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'accurate' is closest in meaning to ___.",
+    "options": [
+      "wrong",
+      "correct",
+      "fast",
+      "cheap"
+    ],
+    "answer": 1,
+    "explanation": "Accurate berarti tepat/correct."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'various' is closest in meaning to ___.",
+    "options": [
+      "many different",
+      "only one",
+      "very small",
+      "not useful"
+    ],
+    "answer": 0,
+    "explanation": "Various berarti berbagai macam."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'maintain' is closest in meaning to ___.",
+    "options": [
+      "keep",
+      "lose",
+      "break",
+      "forget"
+    ],
+    "answer": 0,
+    "explanation": "Maintain berarti menjaga/mempertahankan."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'decrease' is opposite in meaning to ___.",
+    "options": [
+      "reduce",
+      "fall",
+      "increase",
+      "drop"
+    ],
+    "answer": 2,
+    "explanation": "Opposite dari decrease adalah increase."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'ancient' is opposite in meaning to ___.",
+    "options": [
+      "old",
+      "modern",
+      "historic",
+      "early"
+    ],
+    "answer": 1,
+    "explanation": "Opposite dari ancient adalah modern."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'reject' is opposite in meaning to ___.",
+    "options": [
+      "accept",
+      "refuse",
+      "deny",
+      "avoid"
+    ],
+    "answer": 0,
+    "explanation": "Opposite dari reject adalah accept."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'common' is opposite in meaning to ___.",
+    "options": [
+      "usual",
+      "ordinary",
+      "rare",
+      "general"
+    ],
+    "answer": 2,
+    "explanation": "Opposite dari common adalah rare."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "The word 'expand' is opposite in meaning to ___.",
+    "options": [
+      "increase",
+      "extend",
+      "reduce",
+      "grow"
+    ],
+    "answer": 2,
+    "explanation": "Opposite dari expand adalah reduce/contract."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "In the sentence, 'The teacher clarified the rule,' clarified means ___.",
+    "options": [
+      "made clear",
+      "made longer",
+      "made difficult",
+      "made silent"
+    ],
+    "answer": 0,
+    "explanation": "Clarify berarti memperjelas."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "In the sentence, 'The result was obvious,' obvious means ___.",
+    "options": [
+      "clear",
+      "hidden",
+      "wrong",
+      "late"
+    ],
+    "answer": 0,
+    "explanation": "Obvious berarti jelas."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "In the sentence, 'The method is efficient,' efficient means ___.",
+    "options": [
+      "working well without waste",
+      "very expensive",
+      "hard to remember",
+      "not useful"
+    ],
+    "answer": 0,
+    "explanation": "Efficient berarti efisien."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "In the sentence, 'The issue is complex,' complex means ___.",
+    "options": [
+      "simple",
+      "complicated",
+      "small",
+      "funny"
+    ],
+    "answer": 1,
+    "explanation": "Complex berarti rumit/complicated."
+  },
+  {
+    "section": "Vocabulary",
+    "type": "Meaning in Context",
+    "level": "Basic",
+    "question": "In the sentence, 'The evidence supports the claim,' evidence means ___.",
+    "options": [
+      "proof",
+      "question",
+      "answer",
+      "mistake"
+    ],
+    "answer": 0,
+    "explanation": "Evidence berarti bukti/proof."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "What is the main idea of the passage?",
+    "options": [
+      "Learning English only needs memorization",
+      "Vocabulary, grammar, and context are all important",
+      "Students should avoid grammar",
+      "The word player is a verb"
+    ],
+    "answer": 1,
+    "explanation": "Teks menjelaskan bahwa vocabulary, grammar, dan context sama-sama penting.",
+    "passage": "Daily English Practice\n\nMany students think that learning English means memorizing many words. Vocabulary is important, but grammar and context are also necessary. A learner should understand how words work in a sentence. For example, the word 'play' can be a verb, but the word 'player' is a noun. By studying structure, students can read faster and write more accurately."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "According to the passage, why is structure important?",
+    "options": [
+      "It helps students read faster and write accurately",
+      "It makes students memorize fewer words",
+      "It removes vocabulary",
+      "It changes nouns into verbs"
+    ],
+    "answer": 0,
+    "explanation": "Kalimat terakhir menyebut read faster dan write more accurately.",
+    "passage": "Daily English Practice\n\nMany students think that learning English means memorizing many words. Vocabulary is important, but grammar and context are also necessary. A learner should understand how words work in a sentence. For example, the word 'play' can be a verb, but the word 'player' is a noun. By studying structure, students can read faster and write more accurately."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "The word 'accurately' is closest in meaning to ___.",
+    "options": [
+      "correctly",
+      "slowly",
+      "loudly",
+      "rarely"
+    ],
+    "answer": 0,
+    "explanation": "Accurately berarti dengan tepat/correctly.",
+    "passage": "Daily English Practice\n\nMany students think that learning English means memorizing many words. Vocabulary is important, but grammar and context are also necessary. A learner should understand how words work in a sentence. For example, the word 'play' can be a verb, but the word 'player' is a noun. By studying structure, students can read faster and write more accurately."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "What does the passage mainly discuss?",
+    "options": [
+      "The history of printed books",
+      "The role of technology in learning",
+      "The danger of online videos",
+      "The cost of applications"
+    ],
+    "answer": 1,
+    "explanation": "Topik utama adalah peran teknologi dalam pembelajaran.",
+    "passage": "Technology in Education\n\nTechnology has changed the way students learn. In the past, learners depended mostly on printed books. Today, they can use videos, online dictionaries, and interactive applications. However, technology is only useful when students use it actively. A good application should encourage practice, give feedback, and help learners review their mistakes."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "According to the passage, technology is useful when students ___.",
+    "options": [
+      "use it actively",
+      "avoid feedback",
+      "only watch videos",
+      "stop reading books"
+    ],
+    "answer": 0,
+    "explanation": "Teks menyebut useful when students use it actively.",
+    "passage": "Technology in Education\n\nTechnology has changed the way students learn. In the past, learners depended mostly on printed books. Today, they can use videos, online dictionaries, and interactive applications. However, technology is only useful when students use it actively. A good application should encourage practice, give feedback, and help learners review their mistakes."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "The word 'encourage' is closest in meaning to ___.",
+    "options": [
+      "motivate",
+      "prevent",
+      "confuse",
+      "ignore"
+    ],
+    "answer": 0,
+    "explanation": "Encourage berarti mendorong/memotivasi.",
+    "passage": "Technology in Education\n\nTechnology has changed the way students learn. In the past, learners depended mostly on printed books. Today, they can use videos, online dictionaries, and interactive applications. However, technology is only useful when students use it actively. A good application should encourage practice, give feedback, and help learners review their mistakes."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "What is the best title for the passage?",
+    "options": [
+      "How to Sleep All Day",
+      "Healthy Study Habits",
+      "The Problem with Memory",
+      "One-Day Test Preparation"
+    ],
+    "answer": 1,
+    "explanation": "Isi bacaan membahas kebiasaan belajar yang sehat.",
+    "passage": "Healthy Study Habits\n\nSuccessful learners usually have consistent study habits. They do not study only one day before a test. Instead, they review small parts of the lesson every day. This habit reduces stress and improves long-term memory. Sleep is also important because the brain organizes information while a person rests."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "Why should students review small parts every day?",
+    "options": [
+      "To reduce stress and improve memory",
+      "To avoid sleeping",
+      "To forget the lesson",
+      "To make the test longer"
+    ],
+    "answer": 0,
+    "explanation": "Teks menyebut reduces stress dan improves long-term memory.",
+    "passage": "Healthy Study Habits\n\nSuccessful learners usually have consistent study habits. They do not study only one day before a test. Instead, they review small parts of the lesson every day. This habit reduces stress and improves long-term memory. Sleep is also important because the brain organizes information while a person rests."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "The word 'consistent' is closest in meaning to ___.",
+    "options": [
+      "regular",
+      "rare",
+      "sudden",
+      "weak"
+    ],
+    "answer": 0,
+    "explanation": "Consistent berarti teratur/regular.",
+    "passage": "Healthy Study Habits\n\nSuccessful learners usually have consistent study habits. They do not study only one day before a test. Instead, they review small parts of the lesson every day. This habit reduces stress and improves long-term memory. Sleep is also important because the brain organizes information while a person rests."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "What is the passage mainly about?",
+    "options": [
+      "Advantages and requirements of public transportation",
+      "How to buy a private car",
+      "Traffic signs in small towns",
+      "The history of trains"
+    ],
+    "answer": 0,
+    "explanation": "Bacaan membahas manfaat dan syarat transportasi publik.",
+    "passage": "Public Transportation\n\nPublic transportation can reduce traffic problems in large cities. Buses and trains carry many passengers at the same time, so fewer private vehicles are needed on the road. In addition, public transportation can be cheaper than driving a private car. Nevertheless, the system must be clean, safe, and punctual to attract more users."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "Why can public transportation reduce traffic?",
+    "options": [
+      "It carries many passengers at the same time",
+      "It is always free",
+      "It uses private vehicles",
+      "It closes roads"
+    ],
+    "answer": 0,
+    "explanation": "Teks menyebut membawa banyak penumpang sekaligus.",
+    "passage": "Public Transportation\n\nPublic transportation can reduce traffic problems in large cities. Buses and trains carry many passengers at the same time, so fewer private vehicles are needed on the road. In addition, public transportation can be cheaper than driving a private car. Nevertheless, the system must be clean, safe, and punctual to attract more users."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "The word 'punctual' means ___.",
+    "options": [
+      "on time",
+      "expensive",
+      "crowded",
+      "dangerous"
+    ],
+    "answer": 0,
+    "explanation": "Punctual berarti tepat waktu.",
+    "passage": "Public Transportation\n\nPublic transportation can reduce traffic problems in large cities. Buses and trains carry many passengers at the same time, so fewer private vehicles are needed on the road. In addition, public transportation can be cheaper than driving a private car. Nevertheless, the system must be clean, safe, and punctual to attract more users."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "What is the main idea of the passage?",
+    "options": [
+      "Small actions can support environmental protection",
+      "Plastic should be used more often",
+      "Only schools can protect nature",
+      "Trees are not important"
+    ],
+    "answer": 0,
+    "explanation": "Bacaan menekankan tindakan kecil yang berdampak besar.",
+    "passage": "Environmental Awareness\n\nEnvironmental awareness begins with simple actions. People can save electricity, reduce plastic use, and plant trees. These actions may seem small, but they can create a significant impact when many people do them together. Schools can also teach students to protect nature through projects and daily habits."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "According to the passage, schools can teach students through ___.",
+    "options": [
+      "projects and daily habits",
+      "expensive cars",
+      "plastic products",
+      "traffic rules"
+    ],
+    "answer": 0,
+    "explanation": "Kalimat terakhir menyebut projects and daily habits.",
+    "passage": "Environmental Awareness\n\nEnvironmental awareness begins with simple actions. People can save electricity, reduce plastic use, and plant trees. These actions may seem small, but they can create a significant impact when many people do them together. Schools can also teach students to protect nature through projects and daily habits."
+  },
+  {
+    "section": "Reading",
+    "type": "Reading Comprehension",
+    "level": "Intermediate",
+    "question": "The word 'significant' is closest in meaning to ___.",
+    "options": [
+      "important",
+      "tiny",
+      "unclear",
+      "temporary"
+    ],
+    "answer": 0,
+    "explanation": "Significant berarti penting/berarti.",
+    "passage": "Environmental Awareness\n\nEnvironmental awareness begins with simple actions. People can save electricity, reduce plastic use, and plant trees. These actions may seem small, but they can create a significant impact when many people do them together. Schools can also teach students to protect nature through projects and daily habits."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What did the student forget?",
+    "options": [
+      "his notebook",
+      "his lunch",
+      "his phone",
+      "his umbrella"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut forgot to bring his notebook.",
+    "audioText": "The student forgot to bring his notebook."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "When will the teacher explain the rule?",
+    "options": [
+      "after lunch",
+      "before class",
+      "tomorrow morning",
+      "next week"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut after lunch.",
+    "audioText": "The teacher will explain the grammar rule after lunch."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "Where is the woman probably?",
+    "options": [
+      "in the library",
+      "at the airport",
+      "in the kitchen",
+      "at the bank"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut looking for a dictionary in the library.",
+    "audioText": "The woman is looking for a dictionary in the library."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What has the man done?",
+    "options": [
+      "submitted his assignment",
+      "lost his assignment",
+      "checked his email",
+      "bought a book"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut has already submitted.",
+    "audioText": "The man has already submitted his assignment."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What were the students doing?",
+    "options": [
+      "discussing the project",
+      "taking the bus",
+      "watching a movie",
+      "cleaning the room"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut were discussing the project.",
+    "audioText": "The students were discussing the project when the bell rang."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What happened to the meeting?",
+    "options": [
+      "It was cancelled",
+      "It started early",
+      "It moved online",
+      "It became longer"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut meeting has been cancelled.",
+    "audioText": "The speaker says the meeting has been cancelled."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What does the woman prefer?",
+    "options": [
+      "tea",
+      "coffee",
+      "milk",
+      "juice"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut prefers tea to coffee.",
+    "audioText": "The woman prefers tea to coffee."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What does the man imply?",
+    "options": [
+      "He does not have enough time",
+      "He dislikes studying",
+      "He passed the test",
+      "He has finished studying"
+    ],
+    "answer": 0,
+    "explanation": "Kalimat conditional menunjukkan ia tidak punya cukup waktu.",
+    "audioText": "The man would study harder if he had more time."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "Which book belongs to the teacher?",
+    "options": [
+      "the book on the table",
+      "the book in the bag",
+      "the book near the door",
+      "the book under the chair"
+    ],
+    "answer": 0,
+    "explanation": "Audio menyebut the book on the table.",
+    "audioText": "The book on the table belongs to my teacher."
+  },
+  {
+    "section": "Listening",
+    "type": "Short Listening",
+    "level": "Basic",
+    "question": "What happened first?",
+    "options": [
+      "The train left",
+      "They arrived",
+      "They bought tickets",
+      "They called the teacher"
+    ],
+    "answer": 0,
+    "explanation": "Past perfect 'had left' terjadi lebih dulu.",
+    "audioText": "The train had left before they arrived."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "My brother enjoys ___ English songs.",
+    "options": [
+      "listen",
+      "listening to",
+      "to listening",
+      "listened"
+    ],
+    "answer": 1,
+    "explanation": "Enjoy diikuti gerund: listening to."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The lecturer had the students ___ the article.",
+    "options": [
+      "read",
+      "to read",
+      "reading",
+      "readed"
+    ],
+    "answer": 0,
+    "explanation": "Have + object + base verb."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The city ___ we visited last year was beautiful.",
+    "options": [
+      "where",
+      "who",
+      "whom",
+      "whose"
+    ],
+    "answer": 0,
+    "explanation": "Untuk tempat bisa memakai where."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "This is the student ___ bag was lost.",
+    "options": [
+      "who",
+      "whom",
+      "whose",
+      "which"
+    ],
+    "answer": 2,
+    "explanation": "Whose menunjukkan kepemilikan."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The exam was easier ___ I expected.",
+    "options": [
+      "than",
+      "as",
+      "to",
+      "from"
+    ],
+    "answer": 0,
+    "explanation": "Comparative menggunakan than."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "She speaks English ___ than her brother.",
+    "options": [
+      "fluent",
+      "more fluently",
+      "most fluently",
+      "fluency"
+    ],
+    "answer": 1,
+    "explanation": "Untuk adverb panjang gunakan more fluently."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "There ___ several reasons for the change.",
+    "options": [
+      "is",
+      "are",
+      "was",
+      "has"
+    ],
+    "answer": 1,
+    "explanation": "Several reasons plural, jadi are."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The news ___ surprising.",
+    "options": [
+      "are",
+      "were",
+      "is",
+      "be"
+    ],
+    "answer": 2,
+    "explanation": "News terlihat plural tetapi singular uncountable: is."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "I will call you as soon as I ___ home.",
+    "options": [
+      "arrive",
+      "will arrive",
+      "arrived",
+      "arriving"
+    ],
+    "answer": 0,
+    "explanation": "Time clause setelah as soon as memakai present untuk future meaning."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "She is used to ___ early every morning.",
+    "options": [
+      "wake up",
+      "waking up",
+      "woke up",
+      "wakes up"
+    ],
+    "answer": 1,
+    "explanation": "Be used to diikuti gerund."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "He used to ___ football after school.",
+    "options": [
+      "playing",
+      "played",
+      "play",
+      "plays"
+    ],
+    "answer": 2,
+    "explanation": "Used to + V1."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The problem is too difficult ___ quickly.",
+    "options": [
+      "solve",
+      "to solve",
+      "solving",
+      "solved"
+    ],
+    "answer": 1,
+    "explanation": "Too + adjective + to infinitive."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "She is old enough ___ alone.",
+    "options": [
+      "travel",
+      "to travel",
+      "traveling",
+      "traveled"
+    ],
+    "answer": 1,
+    "explanation": "Adjective + enough + to infinitive."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "I do not know ___ he will come.",
+    "options": [
+      "whether",
+      "weather",
+      "because of",
+      "despite"
+    ],
+    "answer": 0,
+    "explanation": "Whether berarti apakah."
+  },
+  {
+    "section": "Structure",
+    "type": "Incomplete Sentence",
+    "level": "Intermediate",
+    "question": "The teacher explained the lesson ___ everyone could understand it.",
+    "options": [
+      "so that",
+      "because of",
+      "despite",
+      "instead of"
+    ],
+    "answer": 0,
+    "explanation": "So that menyatakan tujuan."
+  }
+];
+  if (!Array.isArray(appDatabase.toeflSimulation)) appDatabase.toeflSimulation = [];
+  const seen = new Set(appDatabase.toeflSimulation.map(q => String(q.question || '') + String(q.audioText || '')));
+  questions.forEach(q => { const key = String(q.question || '') + String(q.audioText || ''); if(!seen.has(key)){ seen.add(key); appDatabase.toeflSimulation.push(q); } });
+})();
